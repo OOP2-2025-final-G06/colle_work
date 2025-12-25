@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>トップ画面</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h2>トップ画面</h2>
+    <ul>
+        <li><a href="{{ url_for('user_list') }}">ユーザリスト</a></li>
+        <li><a href="{{ url_for('wage_register') }}">時給登録</a></li>
+        <li><a href="{{ url_for('game') }}">ゲーム</a></li>
+        <li><a href="{{ url_for('shift_register') }}">シフト登録</a></li>
+    </ul>
+</body>
+</html>
