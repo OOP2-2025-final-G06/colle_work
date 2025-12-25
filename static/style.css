@@ -1,8 +1,13 @@
 body {
     font-family: Arial, sans-serif;
-    padding: 100px;
+    padding: 20px;
 }
+
 input, button {
-    margin: 15px;
-    padding: 15px;
+    margin: 5px;
+    padding: 5px;
+}
+
+.error {
+    color: red;
 }
