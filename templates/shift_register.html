@@ -1,11 +1,117 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>画面名</title>
+    <title>シフト登録 - Colle-Work</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .shift-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .shift-table th, .shift-table td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+        .shift-table th { background-color: #eee; }
+        
+        input[type="time"] { padding: 5px; border-radius: 4px; border: 1px solid #ccc; }
+        
+        .calculated-hour { font-weight: bold; color: blue; margin-left: 10px; }
+        .date-range { font-size: 0.85em; color: #666; margin-left: 10px; font-weight: normal; }
+
+        /* 日付変更ツールバーのスタイル */
+        .date-control-bar {
+            background-color: #f8f9fa;
+            border-top: 2px solid #ddd;
+            padding: 15px;
+            margin-top: 30px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h2>画面名</h2>
-    <a href="{{ url_for('top') }}">トップに戻る</a>
+    <h2>シフト表示・登録画面</h2>
+    
+    <div style="margin-bottom: 20px;">
+        <p><strong>ユーザー名:</strong> {{ user_name }}</p>
+        <p><strong>現在の日付設定:</strong> <span style="font-weight: bold; color: #d63384;">{{ current_date }}</span></p>
+    </div>
+    <hr>
+
+    <h3>今週のシフト (閲覧のみ) <span class="date-range">[{{ current_range }}]</span></h3>
+    <table class="shift-table">
+        <thead>
+            <tr>
+                <th>日付</th>
+                <th>曜日</th>
+                <th>シフト時間</th>
+                <th>合計時間</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for shift in current_week_shifts %}
+            <tr>
+                <td>{{ shift.shift_date }}</td>
+                <td>{{ shift.weekday }}</td>
+                <td>
+                    {% if shift.start_time %}
+                        {{ shift.start_time }} 〜 {{ shift.end_time }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>{{ shift.shift_hour }} h</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h3>来週のシフト (登録・変更可能) <span class="date-range">[{{ next_range }}]</span></h3>
+    <p>時間を入力して保存ボタンを押してください。</p>
+
+    <table class="shift-table">
+        <thead>
+            <tr>
+                <th>日付</th>
+                <th>曜日</th>
+                <th>時間入力</th>
+                <th>保存・確認</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for shift in next_week_shifts %}
+            <tr>
+                <form method="post" action="{{ url_for('shift_register', date=request.args.get('date')) }}">
+                    <td>
+                        {{ shift.shift_date }}
+                        <input type="hidden" name="shift_date" value="{{ shift.shift_date }}">
+                    </td>
+                    <td>{{ shift.weekday }}</td>
+                    <td>
+                        <input type="time" name="start_time" value="{{ shift.start_time }}">
+                        〜
+                        <input type="time" name="end_time" value="{{ shift.end_time }}">
+                    </td>
+                    <td>
+                        <button type="submit">保存</button>
+                        {% if shift.shift_hour > 0 %}
+                            <span class="calculated-hour">登録済: {{ shift.shift_hour }} h</span>
+                        {% endif %}
+                    </td>
+                </form>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="date-control-bar">
+        <h4>📅 日付移動（動作確認用）</h4>
+        <form method="get" action="{{ url_for('shift_register') }}">
+            <label>指定した日付にジャンプ: </label>
+            <input type="date" name="date" value="{{ current_date }}" required>
+            <button type="submit">移動する</button>
+            <a href="{{ url_for('shift_register') }}" style="margin-left: 15px; color: #666;">[今日に戻る]</a>
+        </form>
+        <p style="font-size: 0.8em; color: #888; margin-top: 5px;">※日付を変更すると、その日が「今日」であるかのようにシフト表がずれます。</p>
+    </div>
+
+    <br>
+    <a href="{{ url_for('top') }}">ダッシュボードへ戻る</a>
 </body>
 </html>
