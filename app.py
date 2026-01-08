@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, session
 
 # ★ routesフォルダからインポートするように変更
 from routes import shift_manager
-from routes import user_manager 
+from routes import user_manager
+from routes import wage_manager 
 
 app = Flask(__name__)
 app.secret_key = "secret_key_for_session"
@@ -40,9 +41,14 @@ def register():
 
 @app.route("/top")
 def top():
-    # shift_managerを使ってデータ取得
     weekly_data = shift_manager.get_weekly_shift()
-    return render_template("top.html", shift=weekly_data)
+
+    # ログイン中ユーザーのtoken取得（表示用に使える）
+    token = 0
+    if "username" in session:
+        token = wage_manager.get_user_token(session["username"])
+
+    return render_template("top.html", shift=weekly_data, token=token)
 
 
 @app.route("/user_list")
@@ -58,20 +64,27 @@ def wage_register():
         return redirect(url_for("login"))
 
     if request.method == "POST":
-        # HTML修正済み前提: shift_hourを取得
         try:
             shift_hour = float(request.form["shift_hour"])
-            salary_per_hour = int(request.form["salary_per_hour"])
-            
-            # user_managerで計算・保存
-            user_manager.save_wage(session["username"], shift_hour, salary_per_hour)
-            
-            return redirect(url_for("top"))
-        except KeyError:
-            # HTMLがまだ修正されていない場合の安全策
-            return "エラー: wage_register.html に shift_hour の入力欄がありません。"
 
-    return render_template("wage_register.html")
+            # ② wage_manager に給料計算・保存を任せる
+            salary, token = wage_manager.save_wage(
+                session["username"],
+                shift_hour
+            )
+
+            return redirect(url_for("top"))
+
+        except KeyError:
+            return "HTMLファイルの修正が必要です（shift_hourがありません）"
+
+    # ③ 現在の時給を取得してHTMLに渡す
+    salary_per_hour = wage_manager.get_salary()
+    return render_template(
+        "wage_register.html",
+        salary_per_hour=salary_per_hour
+    )
+
 
 
 @app.route("/game")
