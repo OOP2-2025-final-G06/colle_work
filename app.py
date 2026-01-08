@@ -1,15 +1,47 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import shift_manager
 
 app = Flask(__name__)
+app.secret_key = "secret_key_for_session"
 
 # 仮のユーザ情報（後でDBに置き換え可能）
 users = {
     "testuser": "password"
 }
 
-# 時給（初期値）
+
 salary_per_hour = 1000
+
+
+user_tokens = {
+    "testuser": 0
+}
+
+
+wage_records = []
+
+
+def save_wage(username, shift_hour, salary_per_hour):
+    salary = shift_hour * salary_per_hour
+    token = shift_hour * 5
+
+    # 履歴保存
+    wage_records.append({
+        "username": username,
+        "shift_hour": shift_hour,
+        "salary_per_hour": salary_per_hour,
+        "salary": salary,
+        "token": token
+    })
+
+    # tokenをユーザーごとに加算
+    if username not in user_tokens:
+        user_tokens[username] = 0
+    user_tokens[username] += token
+
+    return salary, token
+# ---------------------------------------
+
 
 @app.route("/", methods=["GET", "POST"])
 def login():
@@ -18,6 +50,12 @@ def login():
         password = request.form["password"]
 
         if username in users and users[username] == password:
+            session["username"] = username  # ★ ログインユーザー保持
+
+            # token初期化（初ログイン時）
+            if username not in user_tokens:
+                user_tokens[username] = 0
+
             return redirect(url_for("top"))
         else:
             return render_template("login.html", error="ユーザ名かパスワードが間違っています")
@@ -53,20 +91,32 @@ def user_list():
     return render_template("user_list.html", users=users)
 
 
-# 時給登録画面（GET / POST）
+
+# mainブランチの「給料計算とトークン保存」のロジックを採用
 @app.route("/wage_register", methods=["GET", "POST"])
 def wage_register():
-    global salary_per_hour
+    if "username" not in session:
+        return redirect(url_for("login"))
 
     if request.method == "POST":
+        # フォームからシフト時間と時給を取得
+        shift_hour = float(request.form["shift_hour"])
         salary_per_hour = int(request.form["salary_per_hour"])
+
+        # 計算して保存（mainブランチの関数を使用）
+        save_wage(session["username"], shift_hour, salary_per_hour)
+
         return redirect(url_for("top"))
 
-    return render_template("wage_register.html", salary=salary_per_hour)
+    return render_template("wage_register.html")
+# ---------------------------------------------
 
 
 @app.route("/game")
 def game():
+    if "username" not in session:
+        return redirect(url_for("login"))
+
     return render_template("game.html")
 
 
@@ -83,4 +133,4 @@ def shift_register():
 
 
 if __name__ == "__main__":
-    app.run(debug=True,port=8080)
+    app.run(debug=True, port=8080)
