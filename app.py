@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-import shift_manager
-import wage_manager
+from routes import shift_manager, wage_manager
 
 app = Flask(__name__)
 app.secret_key = "secret_key_for_session"
