@@ -1,0 +1,28 @@
+.user-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.user-table th,
+.user-table td {
+    border: 1px solid #333;
+    padding: 8px;
+    vertical-align: top;
+}
+
+/* シフト表 */
+.shift-table {
+    border-collapse: collapse;
+}
+
+.shift-table th,
+.shift-table td {
+    border: 1px solid #999;
+    padding: 4px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.shift-table th {
+    background-color: #f0f0f0;
+}

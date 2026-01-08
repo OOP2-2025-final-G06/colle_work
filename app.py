@@ -47,7 +47,7 @@ def top():
 
 @app.route("/user_list")
 def user_list():
-    return render_template("user_list.html")
+    return render_template("user_list.html", users=users)
 
 
 @app.route("/wage_register")
