@@ -5,12 +5,45 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h2>トップ画面</h2>
-    <ul>
-        <li><a href="{{ url_for('user_list') }}">ユーザリスト</a></li>
-        <li><a href="{{ url_for('wage_register') }}">時給登録</a></li>
-        <li><a href="{{ url_for('game') }}">ゲーム</a></li>
-        <li><a href="{{ url_for('shift_register') }}">シフト登録</a></li>
-    </ul>
+    <div class="container">
+        <h2>トップ画面</h2>
+
+        <ul class="menu-list">
+            <li><a href="{{ url_for('user_list') }}">ユーザリスト</a></li>
+            <li><a href="{{ url_for('wage_register') }}">時給登録</a></li>
+            <li><a href="{{ url_for('game') }}">ゲーム</a></li>
+            <li><a href="{{ url_for('shift_register') }}">シフト登録</a></li>
+        </ul>
+
+        <hr>
+        
+        <div class="shift-summary">
+            <h3>来週のシフト予定</h3>
+            <table class="shift-table">
+                <thead>
+                    <tr>
+                        <th>曜日</th>
+                        <th>勤務時間</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for day_en, day_jp in [('mon','月'), ('tue','火'), ('wed','水'), ('thu','木'), ('fri','金'), ('sat','土'), ('sun','日')] %}
+                    <tr>
+                        <td class="day-label">{{ day_jp }}</td>
+                        <td>
+                            {% if shift[day_en+'_start_h'] and shift[day_en+'_end_h'] %}
+                                {{ shift[day_en+'_start_h'] }}:{{ shift[day_en+'_start_m'] }} 
+                                〜 
+                                {{ shift[day_en+'_end_h'] }}:{{ shift[day_en+'_end_m'] }}
+                            {% else %}
+                                <span class="no-data">未登録</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 </html>

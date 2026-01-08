@@ -1,4 +1,4 @@
-body {
+/*body {
     font-family: Arial, sans-serif;
     padding: 20px;
 }
@@ -10,4 +10,65 @@ input, button {
 
 .error {
     color: red;
+}*/
+
+/* グリッドレイアウト：PCなら横並び、スマホなら縦に */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
 }
+
+/* 1日分のカード */
+.calendar-card {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.card-header {
+    background: #f7f7f7;
+    padding: 10px;
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+/* 時：分 を横に並べる */
+.time-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 5px 0;
+}
+
+.select-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.label {
+    font-size: 14px;
+    color: #666;
+}
+
+.arrow {
+    text-align: center;
+    color: #ccc;
+    margin: 2px 0;
+}
+
+select {
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+

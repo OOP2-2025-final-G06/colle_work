@@ -1,11 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-    <title>画面名</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>来週のシフト登録</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{ range(1, 1000) | random }}">
 </head>
 <body>
-    <h2>画面名</h2>
-    <a href="{{ url_for('top') }}">トップに戻る</a>
+    <div class="container">
+        <h2>来週のシフト登録</h2>
+        
+        <form action="/shift_register" method="POST">
+            <div class="calendar-grid">
+                {% for day_en, day_jp in [('mon','月'), ('tue','火'), ('wed','水'), ('thu','木'), ('fri','金'), ('sat','土'), ('sun','日')] %}
+                <div class="calendar-card {{ day_en }}">
+                    <div class="card-header">{{ day_jp }}</div>
+                    <div class="card-body">
+                        <div class="shift-row">
+                            <div class="time-select-group">
+                                <select name="{{ day_en }}_start_h">
+                                    <option value="">時</option>
+                                    {% for h in range(0, 24) %}
+                                    {% set val = "%02d"|format(h) %}
+                                    <option value="{{ val }}" {{ 'selected' if shift[day_en+'_start_h'] == val else '' }}>{{ val }}</option>
+                                    {% endfor %}
+                                </select>
+                                <span class="colon">:</span>
+                                <select name="{{ day_en }}_start_m">
+                                    <option value="">分</option>
+                                    {% for m in ['00', '15', '30', '45'] %}
+                                    <option value="{{ m }}" {{ 'selected' if shift[day_en+'_start_m'] == m else '' }}>{{ m }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="tilde">〜</div>
+
+                            <div class="time-select-group">
+                                <select name="{{ day_en }}_end_h">
+                                    <option value="">時</option>
+                                    {% for h in range(0, 24) %}
+                                    {% set val = "%02d"|format(h) %}
+                                    <option value="{{ val }}" {{ 'selected' if shift[day_en+'_end_h'] == val else '' }}>{{ val }}</option>
+                                    {% endfor %}
+                                </select>
+                                <span class="colon">:</span>
+                                <select name="{{ day_en }}_end_m">
+                                    <option value="">分</option>
+                                    {% for m in ['00', '15', '30', '45'] %}
+                                    <option value="{{ m }}" {{ 'selected' if shift[day_en+'_end_m'] == m else '' }}>{{ m }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="action-area">
+                <button type="submit" class="save-btn">保存する</button>
+                <a href="{{ url_for('top') }}" class="back-link">戻る</a>
+            </div>
+        </form>
+    </div>
 </body>
 </html>
