@@ -1,10 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-    <title>画面名</title>
+    <meta charset="UTF-8">
+    <title>Token Quest</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+
+<div id="gameContainer">
+    <div id="header">
+        <div class="stat-box">
+            <div class="stat-label">USER TOKEN</div>
+            <div class="stat-value" id="uiUserToken">100</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">STAGE</div>
+            <div class="stat-value" id="uiStage">1</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">HP</div>
+            <div class="stat-value" id="uiHp">---</div>
+        </div>
+    </div>
+
+    <canvas id="gameCanvas" width="400" height="480"></canvas>
+
+    <div id="footer">
+        <div class="shot-selector">
+            <div id="shotNormal" class="shot-btn active">
+                <span class="shot-name">NORMAL x1</span>
+                <span class="shot-desc">Cost:1 / Pow:1.0</span>
+            </div>
+            <div id="shotPower" class="shot-btn">
+                <span class="shot-name">POWER x10</span>
+                <span class="shot-desc">Cost:10 / Pow:10.0 / Crit+3%</span>
+            </div>
+        </div>
+
+        <div class="sub-controls">
+            <button class="upgrade-btn" id="upAtkBtn">攻UP<br><span id="costAtk">50</span>T</button>
+            <button class="upgrade-btn" id="upCritBtn">会心UP<br><span id="costCrit">100</span>T</button>
+            <button class="upgrade-btn" id="autoBtn">AUTO<br>OFF</button>
+        </div>
+        <div style="font-size:10px; color:#555; margin-top:5px;">※画面クリックで攻撃できます</div>
+    </div>
+
+    <div id="duModal" class="modal-overlay">
+        <div class="modal-box">
+            <div style="color:#bdc3c7;">BOSS DEFEATED!</div>
+            <div class="big-text" id="duWinAmount">0 Tokens</div>
+            <div id="duGameArea" style="display:none;">
+                <div style="display:flex; justify-content:center; gap:20px; align-items:center;">
+                    <div>
+                        <div style="font-size:12px;">DEALER</div>
+                        <div class="card-display" id="cardDealer">?</div>
+                    </div>
+                    <div style="font-size:20px; font-weight:bold; color:#aaa;">VS</div>
+                    <div>
+                        <div style="font-size:12px;">YOU</div>
+                        <div class="card-display" id="cardPlayer" style="background:#333; color:#333;">?</div>
+                    </div>
+                </div>
+                <div style="margin-top:10px; font-size:14px; color:#f1c40f;" id="duMessage">High or Low?</div>
+                <div class="du-btn-group" id="duControls">
+                    <button class="btn-action btn-high" id="btnHigh">HIGH</button>
+                    <button class="btn-action btn-low" id="btnLow">LOW</button>
+                </div>
+            </div>
+            <div id="duStartButtons">
+                <button class="btn-action" style="background:#e67e22; color:white; width:100%; margin-bottom:10px;" id="btnDuStart">DOUBLE UP CHALLENGE!</button>
+                <button class="btn-action btn-collect" id="btnDuCollect">COLLECT</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='game.js') }}"></script>
+
     <h2>画面名</h2>
     <a href="{{ url_for('top') }}">トップに戻る</a>
 </body>
