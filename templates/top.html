@@ -2,15 +2,59 @@
 <html>
 <head>
     <title>トップ画面</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='top_style.css') }}">
 </head>
 <body>
-    <h2>トップ画面</h2>
-    <ul>
-        <li><a href="{{ url_for('user_list') }}">ユーザリスト</a></li>
-        <li><a href="{{ url_for('wage_register') }}">時給登録</a></li>
-        <li><a href="{{ url_for('game') }}">ゲーム</a></li>
-        <li><a href="{{ url_for('shift_register') }}">シフト登録</a></li>
-    </ul>
+
+    <!-- ヘッダー -->
+    <h1 class="title">ホーム画面</h1>
+    <hr>
+
+    <!-- メインエリア -->
+    <div class="main-container">
+
+        <!-- 左メニュー -->
+        <div class="menu">
+            <ul>
+                <li><a href="{{ url_for('user_list') }}">ユーザリスト</a></li>
+                <li><a href="{{ url_for('wage_register') }}">時給登録</a></li>
+                <li><a href="{{ url_for('game') }}">ゲーム</a></li>
+                <li><a href="{{ url_for('shift_register') }}">シフト登録</a></li>
+            </ul>
+        </div>
+
+        <!-- 右カレンダー -->
+        <div class="calendar-area">
+            <div class="calendar">
+                <h3>今週</h3>
+                <table>
+                    <tr>
+                        <th>月</th><th>火</th><th>水</th><th>木</th>
+                        <th>金</th><th>土</th><th>日</th>
+                    </tr>
+                    <tr>
+                        <td>1</td><td>2</td><td>3</td><td>4</td>
+                        <td>5</td><td>6</td><td>7</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="calendar">
+                <h3>来週</h3>
+                <table>
+                    <tr>
+                        <th>月</th><th>火</th><th>水</th><th>木</th>
+                        <th>金</th><th>土</th><th>日</th>
+                    </tr>
+                    <tr>
+                        <td>8</td><td>9</td><td>10</td><td>11</td>
+                        <td>12</td><td>13</td><td>14</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
 </body>
 </html>

@@ -1,0 +1,59 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* タイトル */
+.title {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* メイン全体 */
+.main-container {
+    display: flex;
+    height: 100%;
+}
+
+/* 左メニュー */
+.menu {
+    width: 200px;
+    padding: 10px;
+    border-right: 2px solid #ccc; /* 縦ライン */
+}
+
+.menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.menu li {
+    margin-bottom: 10px;
+}
+
+.menu a {
+    text-decoration: none;
+    color: #333;
+}
+
+/* 右カレンダー */
+.calendar-area {
+    display: flex;
+    gap: 30px;
+    padding: 10px;
+}
+
+/* カレンダー */
+.calendar table {
+    border-collapse: collapse;
+}
+
+.calendar th,
+.calendar td {
+    border: 1px solid #999;
+    padding: 6px;
+    text-align: center;
+}
+
+.calendar h3 {
+    text-align: center;
+}
