@@ -5,15 +5,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='top_style.css') }}">
 </head>
 <body>
-
-    <!-- ヘッダー -->
     <h1 class="title">ホーム画面</h1>
     <hr>
 
-    <!-- メインエリア -->
     <div class="main-container">
 
-        <!-- 左メニュー -->
         <div class="menu">
             <ul>
                 <li><a href="{{ url_for('user_list') }}">ユーザリスト</a></li>
@@ -23,8 +19,8 @@
             </ul>
         </div>
 
-        <!-- 右カレンダー -->
         <div class="calendar-area">
+            
             <div class="calendar">
                 <h3>今週</h3>
                 <table>
@@ -41,20 +37,33 @@
 
             <div class="calendar">
                 <h3>来週</h3>
-                <table>
-                    <tr>
-                        <th>月</th><th>火</th><th>水</th><th>木</th>
-                        <th>金</th><th>土</th><th>日</th>
-                    </tr>
-                    <tr>
-                        <td>8</td><td>9</td><td>10</td><td>11</td>
-                        <td>12</td><td>13</td><td>14</td>
-                    </tr>
+                <table class="shift-table">
+                    <thead>
+                        <tr>
+                            <th>曜日</th>
+                            <th>勤務時間</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for day_en, day_jp in [('mon','月'), ('tue','火'), ('wed','水'), ('thu','木'), ('fri','金'), ('sat','土'), ('sun','日')] %}
+                        <tr>
+                            <td class="day-label">{{ day_jp }}</td>
+                            <td>
+                                {% if shift is defined and shift[day_en+'_start_h'] and shift[day_en+'_end_h'] %}
+                                    {{ shift[day_en+'_start_h'] }}:{{ shift[day_en+'_start_m'] }} 
+                                    〜 
+                                    {{ shift[day_en+'_end_h'] }}:{{ shift[day_en+'_end_m'] }}
+                                {% else %}
+                                    <span class="no-data">--</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
                 </table>
             </div>
         </div>
 
     </div>
-
 </body>
 </html>
