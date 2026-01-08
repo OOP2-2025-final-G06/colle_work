@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-import shift_manager
+import routes.shift_manager as shift_manager, routes.wage_manager as wage_manager
 
 app = Flask(__name__)
 
@@ -8,8 +8,6 @@ users = {
     "testuser": "password"
 }
 
-# 時給（初期値）
-salary_per_hour = 1000
 
 @app.route("/", methods=["GET", "POST"])
 def login():
@@ -56,13 +54,13 @@ def user_list():
 # 時給登録画面（GET / POST）
 @app.route("/wage_register", methods=["GET", "POST"])
 def wage_register():
-    global salary_per_hour
-
     if request.method == "POST":
-        salary_per_hour = int(request.form["salary_per_hour"])
+        wage_manager.set_salary(int(request.form["salary_per_hour"]))
         return redirect(url_for("top"))
 
-    return render_template("wage_register.html", salary=salary_per_hour)
+    salary = wage_manager.get_salary()
+    return render_template("wage_register.html", salary=salary)
+
 
 
 @app.route("/game")
