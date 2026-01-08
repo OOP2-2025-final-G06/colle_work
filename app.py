@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-# modelsフォルダからモジュールをインポート
+
+# ★ routesフォルダからインポートするように変更
 from routes import shift_manager
 from routes import user_manager 
 
@@ -28,7 +29,7 @@ def register():
         username = request.form["username"]
         password = request.form["password"]
 
-        # user_managerを使って登録
+        # user_managerを使って登録判定
         if user_manager.register_user(username, password):
             return redirect(url_for("login"))
         else:
@@ -39,6 +40,7 @@ def register():
 
 @app.route("/top")
 def top():
+    # shift_managerを使ってデータ取得
     weekly_data = shift_manager.get_weekly_shift()
     return render_template("top.html", shift=weekly_data)
 
@@ -46,8 +48,8 @@ def top():
 @app.route("/user_list")
 def user_list():
     # user_managerからユーザー一覧を取得
-    current_users = user_manager.get_users()
-    return render_template("user_list.html", users=current_users)
+    all_users = user_manager.get_users()
+    return render_template("user_list.html", users=all_users)
 
 
 @app.route("/wage_register", methods=["GET", "POST"])
@@ -56,20 +58,18 @@ def wage_register():
         return redirect(url_for("login"))
 
     if request.method == "POST":
-        # HTML修正後に shift_hour も受け取る前提です
-        # エラー回避のため、安全に取得するように .get を使い、デフォルト値を設定しても良いですが
-        # 基本はHTML側を修正してください。
+        # HTML修正済み前提: shift_hourを取得
         try:
             shift_hour = float(request.form["shift_hour"])
             salary_per_hour = int(request.form["salary_per_hour"])
             
-            # user_managerを使って計算・保存
+            # user_managerで計算・保存
             user_manager.save_wage(session["username"], shift_hour, salary_per_hour)
             
             return redirect(url_for("top"))
         except KeyError:
-            # HTMLが未修正の場合のエラーハンドリング（任意）
-            return "HTMLファイルの修正が必要です（shift_hourがありません）"
+            # HTMLがまだ修正されていない場合の安全策
+            return "エラー: wage_register.html に shift_hour の入力欄がありません。"
 
     return render_template("wage_register.html")
 
@@ -84,6 +84,7 @@ def game():
 @app.route("/shift_register", methods=["GET", "POST"])
 def shift_register():
     if request.method == "POST":
+        # shift_managerを使って保存
         shift_manager.update_weekly_shift(request.form)
         return redirect(url_for("top"))
     
