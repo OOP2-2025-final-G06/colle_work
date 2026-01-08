@@ -8,6 +8,9 @@ users = {
     "testuser": "password"
 }
 
+# 時給（初期値）
+salary_per_hour = 1000
+
 @app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -50,9 +53,16 @@ def user_list():
     return render_template("user_list.html", users=users)
 
 
-@app.route("/wage_register")
+# 時給登録画面（GET / POST）
+@app.route("/wage_register", methods=["GET", "POST"])
 def wage_register():
-    return render_template("wage_register.html")
+    global salary_per_hour
+
+    if request.method == "POST":
+        salary_per_hour = int(request.form["salary_per_hour"])
+        return redirect(url_for("top"))
+
+    return render_template("wage_register.html", salary=salary_per_hour)
 
 
 @app.route("/game")
