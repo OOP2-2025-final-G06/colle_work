@@ -1,10 +1,8 @@
-<<<<<<< HEAD
+
 from flask import Flask, render_template, request, redirect, url_for
 import routes.shift_manager as shift_manager, routes.wage_manager as wage_manager
-=======
 from flask import Flask, render_template, request, redirect, url_for, session
 import shift_manager
->>>>>>> 4b1221f9b0710387db99ba2053c0cc18b1f3fd0b
 
 app = Flask(__name__)
 app.secret_key = "secret_key_for_session"
@@ -14,11 +12,9 @@ users = {
     "testuser": "password"
 }
 
-<<<<<<< HEAD
-=======
+
 
 salary_per_hour = 1000
->>>>>>> 4b1221f9b0710387db99ba2053c0cc18b1f3fd0b
 
 
 user_tokens = {
