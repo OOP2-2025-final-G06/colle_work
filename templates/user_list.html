@@ -5,40 +5,50 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='user_style.css') }}">
 </head>
 <body>
-    <h2>ユーザーリスト</h2>
+    <div class="container">
+        <h2>ユーザーリスト</h2>
 
-    <table class="user-table">
-        <thead>
-            <tr>
-                <th>No.</th>
-                <th>ユーザー名</th>
-                <th>シフト</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for username in users %}
-            <tr>
-                <td>{{ loop.index }}</td>
-                <td>{{ username }}</td>
-                <td>
-                    <!-- シフト表（仮） -->
-                    <table class="shift-table">
-                        <tr>
-                            <th>月</th><th>火</th><th>水</th>
-                            <th>木</th><th>金</th><th>土</th><th>日</th>
-                        </tr>
-                        <tr>
-                            <td>○</td><td>○</td><td>－</td>
-                            <td>○</td><td>○</td><td>－</td><td>－</td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        <table class="user-table">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>ユーザー名</th>
+                    <th>来週のシフト</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for username in users %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ username }}</td>
+                    <td>
+                        <table class="shift-table">
+                            <tr>
+                                {% for day in ["mon","tue","wed","thu","fri","sat","sun"] %}
+                                <th>{{ ["月","火","水","木","金","土","日"][loop.index0] }}</th>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                {% set s = shift.get(username) %}
+                                {% for day in ["mon","tue","wed","thu","fri","sat","sun"] %}
+                                    <td>
+                                        {% if s and s[day+'_start_h'] is defined and s[day+'_end_h'] is defined %}
+                                            {{ s[day+'_start_h'] }}:{{ "%02d"|format(s[day+'_start_m']) }} ～ {{ s[day+'_end_h'] }}:{{ "%02d"|format(s[day+'_end_m']) }}
+                                        {% else %}
+                                            <span class="no-data">－</span>
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-    <br>
-    <a href="{{ url_for('top') }}">トップに戻る</a>
+        <br>
+        <a href="{{ url_for('top') }}" class="back-button">トップに戻る</a>
+    </div>
 </body>
 </html>

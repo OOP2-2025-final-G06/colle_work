@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
+from datetime import date, timedelta
 import shift_manager
 
 app = Flask(__name__)
@@ -39,15 +40,38 @@ def register():
 
 @app.route("/top")
 def top():
-    # 登録されたシフトデータを取得
-    weekly_data = shift_manager.get_weekly_shift()
-    # 画面（top.html）にデータを渡す
-    return render_template("top.html", shift=weekly_data)
+    # 今日
+    today = date.today()
+
+    # 今週の月曜日
+    monday = today - timedelta(days=today.weekday())
+
+    # 今週（月〜日）の日付データ作成
+    week = []
+    for i in range(7):
+        d = monday + timedelta(days=i)
+        week.append({
+            "date": d,
+            "md": d.strftime("%m/%d"),
+            "weekday": d.weekday()  # 月=0
+        })
+
+    # 登録されたシフトを取得
+    weekly_shift = shift_manager.get_weekly_shift()
+
+    return render_template(
+        "top.html",
+        week=week,
+        shift=weekly_shift,
+        today=today
+    )
 
 
 @app.route("/user_list")
 def user_list():
-    return render_template("user_list.html", users=users)
+    # 全ユーザーの来週のシフトを取得
+    weekly_shift = shift_manager.get_weekly_shift()
+    return render_template("user_list.html", users=users, shift=weekly_shift)
 
 
 @app.route("/wage_register")
@@ -63,14 +87,12 @@ def game():
 @app.route("/shift_register", methods=["GET", "POST"])
 def shift_register():
     if request.method == "POST":
-        # データを保存する
         shift_manager.update_weekly_shift(request.form)
         return redirect(url_for("top"))
-    
-    # 保存されているデータを取得してHTMLに送る
+
     current_data = shift_manager.get_weekly_shift()
     return render_template("shift_register.html", shift=current_data)
 
 
 if __name__ == "__main__":
-    app.run(debug=True,port=8080)
+    app.run(debug=True, port=8080)

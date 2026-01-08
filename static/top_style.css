@@ -1,24 +1,43 @@
+/* 全体 */
 body {
     font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-/* タイトル */
-.title {
+/* 上部タイトル */
+.header {
+    background-color: #0044ff;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 28px;
     font-weight: bold;
-    margin-bottom: 10px;
 }
 
-/* メイン全体 */
+/* メインコンテナ: 左メニュー + 右シフト表 */
 .main-container {
     display: flex;
-    height: 100%;
+    height: calc(100vh - 60px);
 }
 
 /* 左メニュー */
 .menu {
     width: 200px;
-    padding: 10px;
-    border-right: 2px solid #ccc; /* 縦ライン */
+    background-color: #f5f5f5;
+    border-right: 2px solid #ccc;
+    padding: 20px 10px;
+}
+
+.menu h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: bold;
 }
 
 .menu ul {
@@ -31,29 +50,82 @@ body {
 }
 
 .menu a {
+    display: block;
+    padding: 8px;
     text-decoration: none;
     color: #333;
+    border-radius: 4px;
 }
 
-/* 右カレンダー */
-.calendar-area {
-    display: flex;
-    gap: 30px;
+.menu a:hover {
+    background-color: #ddd;
+}
+
+/* 右シフト表 */
+.shift-section {
+    flex: 1;
+    padding: 20px;
+}
+
+/* シフト表タイトル */
+.shift-section h2 {
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+/* 各カレンダー */
+.calendar {
+    margin-bottom: 30px;
+    border: 1px solid #ccc;
     padding: 10px;
+    border-radius: 6px;
 }
 
-/* カレンダー */
-.calendar table {
+.calendar-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* カレンダーテーブル */
+.week-table {
     border-collapse: collapse;
+    width: 100%;
 }
 
-.calendar th,
-.calendar td {
+.week-table th {
+    border: 1px solid #999;
+    padding: 6px;
+    background-color: #eee; /* 曜日行の灰色 */
+}
+
+.week-table td {
     border: 1px solid #999;
     padding: 6px;
     text-align: center;
 }
 
-.calendar h3 {
-    text-align: center;
+.date {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.shift {
+    margin-top: 4px;
+}
+
+.no-data {
+    color: #aaa;
+}
+
+.today {
+    background-color: #fff3cd;
+}
+
+.saturday {
+    color: blue;
+}
+
+.sunday {
+    color: red;
 }

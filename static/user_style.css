@@ -1,6 +1,24 @@
+/* ページ全体を中央寄せ */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+}
+
+/* タイトル */
+h2 {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* ユーザーテーブル */
 .user-table {
     border-collapse: collapse;
-    width: 100%;
+    width: 80%; /* 中央寄せで幅調整 */
+    max-width: 900px;
 }
 
 .user-table th,
@@ -10,9 +28,14 @@
     vertical-align: top;
 }
 
-/* シフト表 */
+.user-table th {
+    background-color: #f0f0f0; /* ヘッダー薄灰色 */
+}
+
+/* 来週のシフト表 */
 .shift-table {
     border-collapse: collapse;
+    width: 100%;
 }
 
 .shift-table th,
@@ -25,4 +48,19 @@
 
 .shift-table th {
     background-color: #f0f0f0;
+}
+
+/* トップに戻るリンク */
+a {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 8px 16px;
+    text-decoration: none;
+    background-color: #0095ff;
+    color: white;
+    border-radius: 4px;
+}
+
+a:hover {
+    background-color: #007acc;
 }

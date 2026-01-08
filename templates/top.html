@@ -5,65 +5,79 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='top_style.css') }}">
 </head>
 <body>
-    <h1 class="title">ホーム画面</h1>
-    <hr>
+    <!-- 上部タイトル -->
+    <header class="header">
+        <h1>コレワーク</h1>
+    </header>
 
     <div class="main-container">
-
-        <div class="menu">
+        <!-- 左メニュー -->
+        <nav class="menu">
+            <h2>メニュー</h2>
             <ul>
-                <li><a href="{{ url_for('user_list') }}">ユーザリスト</a></li>
+                <li><a href="{{ url_for('user_list') }}">ユーザーリスト</a></li>
                 <li><a href="{{ url_for('wage_register') }}">時給登録</a></li>
                 <li><a href="{{ url_for('game') }}">ゲーム</a></li>
                 <li><a href="{{ url_for('shift_register') }}">シフト登録</a></li>
+                <li><a href="{{ url_for('login') }}">ホームへ</a></li>
             </ul>
-        </div>
+        </nav>
 
-        <div class="calendar-area">
-            
+        <!-- 右側シフト表 -->
+        <section class="shift-section">
+            <h2>シフト表</h2>
+
+            <!-- 今週 -->
             <div class="calendar">
-                <h3>今週</h3>
-                <table>
+                <div class="calendar-title">今週</div>
+                <table class="week-table">
                     <tr>
-                        <th>月</th><th>火</th><th>水</th><th>木</th>
-                        <th>金</th><th>土</th><th>日</th>
+                        {% for d in week %}
+                        <th>{{ ["月","火","水","木","金","土","日"][d.weekday] }}</th>
+                        {% endfor %}
                     </tr>
                     <tr>
-                        <td>1</td><td>2</td><td>3</td><td>4</td>
-                        <td>5</td><td>6</td><td>7</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="calendar">
-                <h3>来週</h3>
-                <table class="shift-table">
-                    <thead>
-                        <tr>
-                            <th>曜日</th>
-                            <th>勤務時間</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for day_en, day_jp in [('mon','月'), ('tue','火'), ('wed','水'), ('thu','木'), ('fri','金'), ('sat','土'), ('sun','日')] %}
-                        <tr>
-                            <td class="day-label">{{ day_jp }}</td>
-                            <td>
-                                {% if shift is defined and shift[day_en+'_start_h'] and shift[day_en+'_end_h'] %}
-                                    {{ shift[day_en+'_start_h'] }}:{{ shift[day_en+'_start_m'] }} 
-                                    〜 
-                                    {{ shift[day_en+'_end_h'] }}:{{ shift[day_en+'_end_m'] }}
+                        {% for d in week %}
+                        {% set key = ["mon","tue","wed","thu","fri","sat","sun"][d.weekday] %}
+                        <td class="{% if d.date == today %}today{% endif %}">
+                            <div class="date">{{ d.md }}</div>
+                            <div class="shift">
+                                {% if shift[key] %}
+                                    {{ shift[key] }}
                                 {% else %}
                                     <span class="no-data">--</span>
                                 {% endif %}
-                            </td>
-                        </tr>
+                            </div>
+                        </td>
                         {% endfor %}
-                    </tbody>
+                    </tr>
                 </table>
             </div>
-        </div>
 
+            <!-- 来週 -->
+            <div class="calendar">
+                <div class="calendar-title">来週</div>
+                <table class="week-table">
+                    <tr>
+                        {% for day_jp in ["月","火","水","木","金","土","日"] %}
+                        <th>{{ day_jp }}</th>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        {% for day_en in ["mon","tue","wed","thu","fri","sat","sun"] %}
+                        <td>
+                            {% if shift[day_en+'_start_h'] and shift[day_en+'_end_h'] %}
+                                {{ shift[day_en+'_start_h'] }}:{{ shift[day_en+'_start_m'] }} ～ {{ shift[day_en+'_end_h'] }}:{{ shift[day_en+'_end_m'] }}
+                            {% else %}
+                                <span class="no-data">--</span>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                </table>
+            </div>
+
+        </section>
     </div>
 </body>
 </html>
