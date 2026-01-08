@@ -1,5 +1,7 @@
+
 from flask import Flask, render_template, request, redirect, url_for, session
 from routes import shift_manager, wage_manager
+
 
 app = Flask(__name__)
 app.secret_key = "secret_key_for_session"
@@ -8,6 +10,12 @@ app.secret_key = "secret_key_for_session"
 users = {
     "testuser": "password"
 }
+
+
+
+
+
+salary_per_hour = 1000
 
 
 
