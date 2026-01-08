@@ -1,8 +1,7 @@
 
-from flask import Flask, render_template, request, redirect, url_for
-import routes.shift_manager as shift_manager, routes.wage_manager as wage_manager
 from flask import Flask, render_template, request, redirect, url_for, session
-import shift_manager
+from routes import shift_manager, wage_manager
+
 
 app = Flask(__name__)
 app.secret_key = "secret_key_for_session"
@@ -14,7 +13,10 @@ users = {
 
 
 
+
+
 salary_per_hour = 1000
+
 
 
 user_tokens = {
@@ -99,7 +101,6 @@ def user_list():
 # mainブランチの「給料計算とトークン保存」のロジックを採用
 @app.route("/wage_register", methods=["GET", "POST"])
 def wage_register():
-<<<<<<< HEAD
     if request.method == "POST":
         wage_manager.set_salary(int(request.form["salary_per_hour"]))
         return redirect(url_for("top"))
@@ -107,23 +108,6 @@ def wage_register():
     salary = wage_manager.get_salary()
     return render_template("wage_register.html", salary=salary)
 
-=======
-    if "username" not in session:
-        return redirect(url_for("login"))
-
-    if request.method == "POST":
-        # フォームからシフト時間と時給を取得
-        shift_hour = float(request.form["shift_hour"])
-        salary_per_hour = int(request.form["salary_per_hour"])
-
-        # 計算して保存（mainブランチの関数を使用）
-        save_wage(session["username"], shift_hour, salary_per_hour)
-
-        return redirect(url_for("top"))
-
-    return render_template("wage_register.html")
-# ---------------------------------------------
->>>>>>> 4b1221f9b0710387db99ba2053c0cc18b1f3fd0b
 
 
 @app.route("/game")
