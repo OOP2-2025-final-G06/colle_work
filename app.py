@@ -1,10 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+import shift_manager
+
 
 app = Flask(__name__)
 app.secret_key = "secret_key_for_session"
 
-# 仮のユーザ情報
-users = {"testuser": "password"}
+# 仮のユーザ情報（後でDBに置き換え可能）
+users = {
+    "testuser": "password"
+}
 
 # ユーザーごとの token 管理
 user_tokens = {
@@ -55,13 +59,34 @@ def login():
 
     return render_template("login.html")
 
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        if username in users:
+            return render_template("register.html", error="そのユーザ名は既に使われています")
+        else:
+            users[username] = password
+            return redirect(url_for("login"))
+
+    return render_template("register.html")
+
+
 @app.route("/top")
 def top():
-    return render_template("top.html")
+    # 登録されたシフトデータを取得
+    weekly_data = shift_manager.get_weekly_shift()
+    # 画面（top.html）にデータを渡す
+    return render_template("top.html", shift=weekly_data)
+
 
 @app.route("/user_list")
 def user_list():
-    return render_template("user_list.html")
+    return render_template("user_list.html", users=users)
+
 
 # 給料・token 登録
 @app.route("/wage_register", methods=["GET", "POST"])
@@ -79,6 +104,7 @@ def wage_register():
 
     return render_template("wage_register.html")
 
+
 @app.route("/game")
 def game():
     if "username" not in session:
@@ -87,9 +113,19 @@ def game():
     return render_template("game.html")
 
 
-@app.route("/shift_register")
+
+@app.route("/shift_register", methods=["GET", "POST"])
+
 def shift_register():
-    return render_template("shift_register.html")
+    if request.method == "POST":
+        # データを保存する
+        shift_manager.update_weekly_shift(request.form)
+        return redirect(url_for("top"))
+    
+    # 保存されているデータを取得してHTMLに送る
+    current_data = shift_manager.get_weekly_shift()
+    return render_template("shift_register.html", shift=current_data)
+
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True,port=8080)

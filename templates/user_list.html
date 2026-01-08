@@ -1,11 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>画面名</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>ユーザーリスト</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='user_style.css') }}">
 </head>
 <body>
-    <h2>画面名</h2>
+    <h2>ユーザーリスト</h2>
+
+    <table class="user-table">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>ユーザー名</th>
+                <th>シフト</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for username in users %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ username }}</td>
+                <td>
+                    <!-- シフト表（仮） -->
+                    <table class="shift-table">
+                        <tr>
+                            <th>月</th><th>火</th><th>水</th>
+                            <th>木</th><th>金</th><th>土</th><th>日</th>
+                        </tr>
+                        <tr>
+                            <td>○</td><td>○</td><td>－</td>
+                            <td>○</td><td>○</td><td>－</td><td>－</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
     <a href="{{ url_for('top') }}">トップに戻る</a>
 </body>
 </html>
