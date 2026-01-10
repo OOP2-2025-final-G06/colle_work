@@ -8,61 +8,74 @@
 </head>
 <body>
     <div class="container">
-        <h2>来週のシフト登録</h2>
+        <h2>{{ data.username }} さんのシフト登録</h2>
+        <a href="{{ url_for('top') }}">TOPへ戻る</a>
         
         <form action="/shift_register" method="POST">
-            <div class="calendar-grid">
-                {% for day_en, day_jp in [('mon','月'), ('tue','火'), ('wed','水'), ('thu','木'), ('fri','金'), ('sat','土'), ('sun','日')] %}
-                <div class="calendar-card {{ day_en }}">
-                    <div class="card-header">{{ day_jp }}</div>
-                    <div class="card-body">
-                        <div class="shift-row">
-                            <div class="time-select-group">
-                                <select name="{{ day_en }}_start_h">
-                                    <option value="">時</option>
-                                    {% for h in range(0, 24) %}
-                                    {% set val = "%02d"|format(h) %}
-                                    <option value="{{ val }}" {{ 'selected' if shift[day_en+'_start_h'] == val else '' }}>{{ val }}</option>
-                                    {% endfor %}
-                                </select>
-                                <span class="colon">:</span>
-                                <select name="{{ day_en }}_start_m">
-                                    <option value="">分</option>
-                                    {% for m in ['00', '15', '30', '45'] %}
-                                    <option value="{{ m }}" {{ 'selected' if shift[day_en+'_start_m'] == m else '' }}>{{ m }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
+            <input type="hidden" name="base_date" value="{{ data.next_monday }}">
+            
+            <div>
+                {% for day in data.days_info %}
+                <div style="border: 1px solid #ccc; margin-bottom: 10px; padding: 10px;">
+                    <p><strong>{{ day.display }} ({{ day.day_jp }})</strong></p>
+                    
+                    <select name="{{ day.day_en }}_start_h">
+                        <option value="">時</option>
+                        {% for h in range(0, 24) %}
+                        <option value="{{ '%02d'|format(h) }}">{{ '%02d'|format(h) }}</option>
+                        {% endfor %}
+                    </select> : 
+                    <select name="{{ day.day_en }}_start_m">
+                        <option value="">分</option>
+                        {% for m in ['00', '15', '30', '45'] %}
+                        <option value="{{ m }}">{{ m }}</option>
+                        {% endfor %}
+                    </select>
+                    
+                    <span> 〜 </span>
 
-                            <div class="tilde">〜</div>
-
-                            <div class="time-select-group">
-                                <select name="{{ day_en }}_end_h">
-                                    <option value="">時</option>
-                                    {% for h in range(0, 24) %}
-                                    {% set val = "%02d"|format(h) %}
-                                    <option value="{{ val }}" {{ 'selected' if shift[day_en+'_end_h'] == val else '' }}>{{ val }}</option>
-                                    {% endfor %}
-                                </select>
-                                <span class="colon">:</span>
-                                <select name="{{ day_en }}_end_m">
-                                    <option value="">分</option>
-                                    {% for m in ['00', '15', '30', '45'] %}
-                                    <option value="{{ m }}" {{ 'selected' if shift[day_en+'_end_m'] == m else '' }}>{{ m }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+                    <select name="{{ day.day_en }}_end_h">
+                        <option value="">時</option>
+                        {% for h in range(0, 24) %}
+                        <option value="{{ '%02d'|format(h) }}">{{ '%02d'|format(h) }}</option>
+                        {% endfor %}
+                    </select> : 
+                    <select name="{{ day.day_en }}_end_m">
+                        <option value="">分</option>
+                        {% for m in ['00', '15', '30', '45'] %}
+                        <option value="{{ m }}">{{ m }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 {% endfor %}
             </div>
             
-            <div class="action-area">
-                <button type="submit" class="save-btn">保存する</button>
-                <a href="{{ url_for('top') }}" class="back-link">戻る</a>
-            </div>
+            <button type="submit">登録</button>
         </form>
+
+        <hr>
+
+        {% if data.current_shifts %}
+        <h3>あなたの登録履歴（直近7件）</h3>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>日付</th>
+                    <th>勤務時間</th>
+                    <th>合計</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in data.current_shifts %}
+                <tr>
+                    <td>{{ s.date }}</td>
+                    <td>{{ s.start_h }}:{{ s.start_m }} 〜 {{ s.end_h }}:{{ s.end_m }}</td>
+                    <td>{{ s.shift_hour }}h</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
     </div>
 </body>
 </html>
