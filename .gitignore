@@ -1,8 +1,7 @@
 # Pythonの一時ファイル（ゴミ）
 __pycache__/
-shift_manager.cpython-313.pyc
-user_manager.cpython-313.pyc
-wage_manager.cpython-313.pyc
+*.pyc
+
 
 # Macの不要ファイル
 .DS_Store
