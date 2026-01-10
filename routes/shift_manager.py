@@ -23,7 +23,7 @@ def init_db():
         """)
 
 def update_weekly_shift(form_data):
-def get_shift_registration_data(username):
+    
     """
     シフト登録画面で使用するデータを一括で返す。
 
