@@ -41,12 +41,15 @@ def register():
 
 @app.route("/top")
 def top():
-    weekly_data = shift_manager.get_weekly_shift()
+    # 現在ログインしているユーザーを全処理のキーとして扱う
+    username = session["username"]
 
-    # ログイン中ユーザーのtoken取得（表示用に使える）
-    token = 0
-    if "username" in session:
-        token = wage_manager.get_user_token(session["username"])
+    # 直近一週間分のシフトを取得
+    weekly_data = shift_manager.get_weekly_shift(username)
+
+    #　給料表示、ゲーム連携用のトークンを取得
+    # wage_manager側も同様にusernameを渡してトークンを取得
+    token = wage_manager.get_user_token(username)
 
     return render_template("top.html", shift=weekly_data, token=token)
 
@@ -96,14 +99,20 @@ def game():
 
 @app.route("/shift_register", methods=["GET", "POST"])
 def shift_register():
-    if request.method == "POST":
-        # shift_managerを使って保存
-        shift_manager.update_weekly_shift(request.form)
-        return redirect(url_for("top"))
+    if "username" not in session:
+        return redirect(url_for("login"))
     
-    current_data = shift_manager.get_weekly_shift()
-    return render_template("shift_register.html", shift=current_data)
+    username = session["username"]
 
+    if request.method == "POST":
+         # シフト登録と給料計算をまとめて manager に任せる
+        shift_manager.save_shift_and_wage(username, request.form)
+        return redirect(url_for("top"))
+
+    # 来週分のシフト登録に必要な情報を一括取得
+    data = shift_manager.get_shift_registration_data(username)
+    
+    return render_template("shift_register.html", data=data)
 
 if __name__ == "__main__":
     app.run(debug=True, port=8080)
