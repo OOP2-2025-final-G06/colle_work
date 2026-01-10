@@ -1,0 +1,6 @@
+# Pythonの一時ファイル（ゴミ）
+__pycache__/
+*.pyc
+
+# Macの不要ファイル
+.DS_Store
