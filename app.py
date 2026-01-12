@@ -2,9 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for, session
 
 # ★ routesフォルダからインポートするように変更
 from routes import shift_manager
-from routes import user_manager 
+from routes import user_manager
+from routes import game_manager
 
 app = Flask(__name__)
+app.register_blueprint(game_manager.game_bp)  # game_managerのBlueprintを登録
 app.secret_key = "secret_key_for_session"
 
 @app.route("/", methods=["GET", "POST"])

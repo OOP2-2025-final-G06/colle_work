@@ -1,8 +1,8 @@
 import sqlite3
 import json
-from flask import Flask, render_template, jsonify, request
+from flask import Blueprint, request, jsonify
 
-app = Flask(__name__)
+game_bp = Blueprint('game_api', __name__)
 
 # データベースファイル名
 DB_PATH = "game.db"
@@ -40,13 +40,9 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
 # --- API ---
 
-@app.route('/api/get_data', methods=['GET'])
+@game_bp.route('/api/get_data', methods=['GET'])
 def get_data():
     conn = get_db_connection()
     user = conn.execute('SELECT * FROM users WHERE id = 1').fetchone()
@@ -61,7 +57,7 @@ def get_data():
     else:
         return jsonify({"error": "User not found"}), 404
 
-@app.route('/api/update_data', methods=['POST'])
+@game_bp.route('/api/update_data', methods=['POST'])
 def update_data():
     new_data = request.json
     stats_str = json.dumps(new_data.get("stats"))
@@ -76,6 +72,3 @@ def update_data():
     conn.close()
     
     return jsonify({"status": "saved"})
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
