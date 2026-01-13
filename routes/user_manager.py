@@ -1,10 +1,12 @@
 # routes/user_manager.py
 
 # ユーザーデータとトークン管理（仮データベース）
+# ユーザーの総トークン数が分かるようにする
 users = {
     "testuser": "password"
 }
 
+# 各ユーザーのトークン数を管理
 user_tokens = {
     "testuser": 0
 }
@@ -61,3 +63,12 @@ def save_wage(username, shift_hour, salary_per_hour):
     user_tokens[username] += token
 
     return salary, token
+
+# ユーザーのトークン管理用関数
+def add_token(username, token):
+    if username not in user_tokens:
+        user_tokens[username] = 0
+    user_tokens[username] += token
+
+def get_user_token(username):
+    return user_tokens.get(username, 0)

@@ -6,13 +6,13 @@
 </head>
 <body>
     <h2>ユーザーリスト</h2>
-
     <table class="user-table">
         <thead>
             <tr>
                 <th>No.</th>
                 <th>ユーザー名</th>
-                <th>シフト</th>
+                <th>総トークン</th>
+                <th>来週のシフト</th>
             </tr>
         </thead>
         <tbody>
@@ -20,16 +20,21 @@
             <tr>
                 <td>{{ loop.index }}</td>
                 <td>{{ username }}</td>
+                <td>{{ user_tokens[username] }}</td>
                 <td>
-                    <!-- シフト表（仮） -->
                     <table class="shift-table">
                         <tr>
                             <th>月</th><th>火</th><th>水</th>
                             <th>木</th><th>金</th><th>土</th><th>日</th>
                         </tr>
                         <tr>
-                            <td>○</td><td>○</td><td>－</td>
-                            <td>○</td><td>○</td><td>－</td><td>－</td>
+                            <td>{{ user_shifts[username]["mon"] }}</td>
+                            <td>{{ user_shifts[username]["tue"] }}</td>
+                            <td>{{ user_shifts[username]["wed"] }}</td>
+                            <td>{{ user_shifts[username]["thu"] }}</td>
+                            <td>{{ user_shifts[username]["fri"] }}</td>
+                            <td>{{ user_shifts[username]["sat"] }}</td>
+                            <td>{{ user_shifts[username]["sun"] }}</td>
                         </tr>
                     </table>
                 </td>
@@ -37,7 +42,6 @@
             {% endfor %}
         </tbody>
     </table>
-
     <br>
     <a href="{{ url_for('top') }}">トップに戻る</a>
 </body>
