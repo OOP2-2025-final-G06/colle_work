@@ -2,6 +2,8 @@
 __pycache__/
 *.pyc
 
+# データベース
+*.db
 
 # Macの不要ファイル
 .DS_Store
