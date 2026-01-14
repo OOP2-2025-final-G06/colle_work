@@ -1,40 +1,61 @@
-# routes/wage_manager.py
+import sqlite3
 from datetime import datetime
 from routes import user_manager
-# ★ game_manager をインポートしてDBを操作できるようにする
 from routes import game_manager 
 
-# =========================
+
 # 設定 (Constants)
-# =========================
 
 TOKEN_PER_HOUR = 10
+DB_PATH = "database.db"  
 
-# =========================
-# 時給管理
-# =========================
 
-user_salaries = {
-    "testuser": 1000
-}
+# データベース初期化
+
+def init_wage_db():
+    """時給保存用のテーブルを作成"""
+    with sqlite3.connect(DB_PATH) as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS user_wages (
+                username TEXT PRIMARY KEY,
+                salary INTEGER
+            )
+        """)
+
+# ファイル読み込み時に初期化を実行
+init_wage_db()
+
+
+# 時給管理 (DB化)
 
 def get_salary(username: str) -> int:
-    return user_salaries.get(username, 1000)
+    """DBから時給を取得（なければデフォルト1000円）"""
+    with sqlite3.connect(DB_PATH) as conn:
+        cur = conn.execute("SELECT salary FROM user_wages WHERE username = ?", (username,))
+        row = cur.fetchone()
+        if row:
+            return row[0]
+        else:
+            return 1000
 
 def set_salary(username: str, value: int):
-    user_salaries[username] = value
+    """DBに時給を保存"""
+    with sqlite3.connect(DB_PATH) as conn:
+        conn.execute("""
+            INSERT OR REPLACE INTO user_wages (username, salary)
+            VALUES (?, ?)
+        """, (username, value))
 
-# =========================
+
+
 # ユーザー & token 管理
-# =========================
 
-# ★ ここを変更：メモリ上の辞書ではなく、DBから最新の値を取ってくる
+
 def get_user_token(username: str) -> int:
     return game_manager.get_user_token_from_db(username)
 
-# =========================
-# 給料履歴管理
-# =========================
+
+
 
 wage_records = []
 
@@ -67,15 +88,16 @@ def get_yearly_forecast(username: str) -> int:
     hourly = get_salary(username)
     return hourly * 15 * 52
 
-# =========================
+
+
 # 給料 & token 計算・保存
-# =========================
+
 
 def save_wage(username: str, shift_hour: float, date_str: str = None):
     if date_str is None:
         date_str = datetime.now().strftime("%Y-%m-%d")
 
-    salary_per_hour = get_salary(username)
+    salary_per_hour = get_salary(username) # ここでDBから時給を取得
     salary = int(shift_hour * salary_per_hour)
     token = int(shift_hour * TOKEN_PER_HOUR)
 
@@ -89,7 +111,7 @@ def save_wage(username: str, shift_hour: float, date_str: str = None):
         "token": token
     })
 
-    # ★ ここを変更：DBに直接トークンを加算する
+    # DBにトークン加算
     game_manager.add_user_token_to_db(username, token)
 
     return salary, token

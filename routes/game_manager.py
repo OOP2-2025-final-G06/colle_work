@@ -1,4 +1,3 @@
-# routes/game_manager.py
 import sqlite3
 import json
 from flask import Blueprint, request, jsonify, session
@@ -27,10 +26,6 @@ def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
-
-# =========================
-# ★ここから追加・修正部分 (外部連携用関数)
-# =========================
 
 def get_user_token_from_db(username):
     """DBから現在のトークン数を取得する"""
@@ -70,9 +65,7 @@ def add_user_token_to_db(username, amount):
     conn.commit()
     conn.close()
 
-# =========================
 # API (ゲーム画面との通信用)
-# =========================
 
 @game_bp.route('/api/get_data', methods=['GET'])
 def get_data():

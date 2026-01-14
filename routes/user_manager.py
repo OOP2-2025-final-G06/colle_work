@@ -1,7 +1,3 @@
-# routes/user_manager.py
-
-# ユーザーデータとトークン管理（仮データベース）
-# ユーザーの総トークン数が分かるようにする
 users = {
     "testuser": "password"
 }
