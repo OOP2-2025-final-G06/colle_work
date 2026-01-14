@@ -1,74 +1,75 @@
-# routes/user_manager.py
+from routes import db
+from typing import List, Dict
 
-# ユーザーデータとトークン管理（仮データベース）
-# ユーザーの総トークン数が分かるようにする
-users = {
-    "testuser": "password"
-}
-
-# 各ユーザーのトークン数を管理
-user_tokens = {
-    "testuser": 0
-}
-
-wage_records = []
-
-def get_users():
-    """全ユーザー情報を返す"""
+def get_users() -> List[str]:
+    conn = db.get_conn()
+    cur = conn.execute("SELECT username FROM users")
+    users = [row["username"] for row in cur.fetchall()]
+    conn.close()
     return users
 
-def register_user(username, password):
-    """
-    新規登録処理
-    登録成功なら True, 重複していて失敗なら False を返す
-    """
-    if username in users:
-        return False
-    users[username] = password
-    
-    # トークン初期化
-    if username not in user_tokens:
-        user_tokens[username] = 0
-    return True
-
-def verify_user(username, password):
-    """
-    ログイン認証処理
-    成功なら True, 失敗なら False を返す
-    """
-    if username in users and users[username] == password:
-        # トークン初期化（念の為）
-        if username not in user_tokens:
-            user_tokens[username] = 0
+def register_user(username: str, password: str) -> bool:
+    conn = db.get_conn()
+    try:
+        conn.execute(
+            "INSERT INTO users (username, password, tokens) VALUES (?, ?, ?)",
+            (username, password, 0)
+        )
+        conn.commit()
         return True
-    return False
+    except Exception:
+        return False
+    finally:
+        conn.close()
 
-def save_wage(username, shift_hour, salary_per_hour):
-    """給与計算とトークン保存を行い、結果を返す"""
-    salary = shift_hour * salary_per_hour
-    token = shift_hour * 5
+def verify_user(username: str, password: str) -> bool:
+    conn = db.get_conn()
+    cur = conn.execute("SELECT password FROM users WHERE username = ?", (username,))
+    row = cur.fetchone()
+    conn.close()
+    if not row:
+        return False
+    return row["password"] == password
 
-    # 履歴保存
-    wage_records.append({
-        "username": username,
-        "shift_hour": shift_hour,
-        "salary_per_hour": salary_per_hour,
-        "salary": salary,
-        "token": token
-    })
+def add_token(username: str, token: int):
+    conn = db.get_conn()
+    conn.execute(
+        "UPDATE users SET tokens = COALESCE(tokens,0) + ? WHERE username = ?",
+        (token, username)
+    )
+    conn.commit()
+    conn.close()
 
-    # tokenをユーザーごとに加算
-    if username not in user_tokens:
-        user_tokens[username] = 0
-    user_tokens[username] += token
+def get_user_token(username: str) -> int:
+    conn = db.get_conn()
+    cur = conn.execute("SELECT tokens FROM users WHERE username = ?", (username,))
+    row = cur.fetchone()
+    conn.close()
+    return int(row["tokens"]) if row and row["tokens"] is not None else 0
 
-    return salary, token
+def get_all_user_tokens() -> Dict[str, int]:
+    conn = db.get_conn()
+    cur = conn.execute("SELECT username, tokens FROM users")
+    res = {row["username"]: int(row["tokens"] or 0) for row in cur.fetchall()}
+    conn.close()
+    return res
 
-# ユーザーのトークン管理用関数
-def add_token(username, token):
-    if username not in user_tokens:
-        user_tokens[username] = 0
-    user_tokens[username] += token
 
-def get_user_token(username):
-    return user_tokens.get(username, 0)
+# === ここから追加 ===
+def init_test_user():
+    conn = db.get_conn()
+    try:
+        conn.execute(
+            "INSERT INTO users (username, password, tokens) VALUES (?, ?, ?)",
+            ("testuser", "password", 0)
+        )
+        conn.commit()
+    except Exception:
+        # 既に存在する場合などは無視
+        pass
+    finally:
+        conn.close()
+
+
+# アプリ起動時などに一度だけ呼ぶ
+init_test_user()
