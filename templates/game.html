@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Token Quest</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='game_style.css') }}">
 </head>
 <body>
 
@@ -11,7 +11,7 @@
     <div id="header">
         <div class="stat-box">
             <div class="stat-label">USER TOKEN</div>
-            <div class="stat-value" id="uiUserToken">100</div>
+            <div class="stat-value" id="uiUserToken">---</div>
         </div>
         <div class="stat-box">
             <div class="stat-label">STAGE</div>
@@ -33,7 +33,7 @@
             </div>
             <div id="shotPower" class="shot-btn">
                 <span class="shot-name">POWER x10</span>
-                <span class="shot-desc">Cost:10 / Pow:10.0 / Crit+3%</span>
+                <span class="shot-desc">Cost:10 / Pow:10.0 / Crit:+3%</span>
             </div>
         </div>
 
@@ -47,8 +47,9 @@
 
     <div id="duModal" class="modal-overlay">
         <div class="modal-box">
-            <div style="color:#bdc3c7;">BOSS DEFEATED!</div>
+            <div style="color:#bdc3c7;">ENEMY DEFEATED!</div>
             <div class="big-text" id="duWinAmount">0 Tokens</div>
+            
             <div id="duGameArea" style="display:none;">
                 <div style="display:flex; justify-content:center; gap:20px; align-items:center;">
                     <div>
@@ -67,6 +68,7 @@
                     <button class="btn-action btn-low" id="btnLow">LOW</button>
                 </div>
             </div>
+
             <div id="duStartButtons">
                 <button class="btn-action" style="background:#e67e22; color:white; width:100%; margin-bottom:10px;" id="btnDuStart">DOUBLE UP CHALLENGE!</button>
                 <button class="btn-action btn-collect" id="btnDuCollect">COLLECT</button>
@@ -77,7 +79,8 @@
 
 <script src="{{ url_for('static', filename='game.js') }}"></script>
 
-    <h2>画面名</h2>
-    <a href="{{ url_for('top') }}">トップに戻る</a>
+    <div style="margin-top:20px; text-align:center;">
+        <a href="{{ url_for('top') }}" style="color: white; text-decoration: underline;">トップに戻る</a>
+    </div>
 </body>
 </html>
