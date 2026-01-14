@@ -1,28 +1,104 @@
+/* =========================
+   全体
+========================= */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+    background-color: #f5f7fa;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* =========================
+   ユーザー一覧テーブル
+========================= */
 .user-table {
+    margin: 0 auto;
     border-collapse: collapse;
-    width: 100%;
+    width: 90%;
+    max-width: 1000px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .user-table th,
 .user-table td {
-    border: 1px solid #333;
-    padding: 8px;
-    vertical-align: top;
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
 }
 
-/* シフト表 */
+/* ヘッダー */
+.user-table th {
+    background-color: #4c66af;
+    color: white;
+    font-weight: normal;
+}
+
+/* 行のホバー */
+.user-table tr:hover {
+    background-color: #f1f3f9;
+}
+
+/* =========================
+   トークン表示
+========================= */
+.user-table td:nth-child(3) {
+    font-weight: bold;
+    color: #ff9800;
+}
+
+/* =========================
+   シフト表
+========================= */
 .shift-table {
+    width: 100%;
     border-collapse: collapse;
+    margin-top: 5px;
+    font-size: 13px;
 }
 
 .shift-table th,
 .shift-table td {
-    border: 1px solid #999;
+    border: 1px solid #ccc;
     padding: 4px;
-    text-align: center;
-    font-size: 12px;
 }
 
+/* シフト表ヘッダー */
 .shift-table th {
-    background-color: #f0f0f0;
+    background-color: #e8ebf5;
+    font-weight: normal;
+}
+
+/* 出勤・休みの表現 */
+.shift-table td {
+    background-color: #fafafa;
+}
+
+.shift-table td:contains("○") {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.shift-table td:contains("－") {
+    color: #999;
+}
+
+/* =========================
+   戻るリンク
+========================= */
+a {
+    display: inline-block;
+    margin-top: 20px;
+    color: #007BFF;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
 }

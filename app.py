@@ -62,7 +62,15 @@ def top():
 def user_list():
     # user_managerからユーザー一覧を取得
     all_users = user_manager.get_users()
-    return render_template("user_list.html", users=all_users)
+    # ユーザーごとのシフト情報を取得
+    user_shifts = {}
+    for username in all_users:
+        user_shifts[username] = shift_manager.get_weekly_shift_time_map(username)
+    return render_template("user_list.html",
+                            users=all_users,
+                            user_tokens=user_manager.user_tokens,  # ユーザーごとのトークン数の追加
+                            user_shifts=user_shifts # ユーザーごとのシフト情報を追加
+                            )
 
 
 @app.route("/wage_register", methods=["GET", "POST"])

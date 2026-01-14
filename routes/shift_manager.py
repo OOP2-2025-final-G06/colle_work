@@ -22,45 +22,7 @@ def init_db():
             )
         """)
 
-def update_weekly_shift(form_data):
-    
-    """
-    シフト登録画面で使用するデータを一括で返す。
 
-    内容:
-    - 来週月曜日の日付
-    - 月〜日までの表示用情報
-    - 既存のシフト情報
-    """
-    init_db()
-    
-    # 1. 来週の月曜日を計算
-    today = datetime.now()
-    days_until_next_monday = (7 - today.weekday()) % 7
-    if days_until_next_monday == 0: days_until_next_monday = 7
-    next_monday = today + timedelta(days=days_until_next_monday)
-    
-    # 2. 月曜〜日曜までの日付リストを作成
-    days_info = []
-    days_jp = ['月', '火', '水', '木', '金', '土', '日']
-    days_en = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
-    
-    for i in range(7):
-        target_date = next_monday + timedelta(days=i)
-        days_info.append({
-            'display': target_date.strftime('%m/%d'), # 01/12 形式
-            'day_jp': days_jp[i],
-            'day_en': days_en[i]
-        })
-    
-    # 3. 必要な情報をまとめて辞書で返す
-    return {
-        "username": username,
-        "next_monday": next_monday.strftime('%Y-%m-%d'),
-        "days_info": days_info,
-        "current_shifts": get_weekly_shift(username) # 下の関数を呼び出す
-    }
-        
 def get_weekly_shift(username):
     """
     指定ユーザーの直近7日分のシフトを取得する。
@@ -127,3 +89,70 @@ def save_shift_and_wage(username, form_data):
     # 勤務時間ごとに給料計算・保存
     for shift_hour in shift_hour_results:
             wage_manager.save_wage(username, shift_hour)
+
+# update_weekly_shiftを消して、代わりに追加してまとめたもの
+def get_shift_registration_data(username):
+    """
+    シフト登録画面で使用するデータを一括で返す
+    """
+    init_db()
+
+    today = datetime.now()
+    days_until_next_monday = (7 - today.weekday()) % 7
+    if days_until_next_monday == 0:
+        days_until_next_monday = 7
+    next_monday = today + timedelta(days=days_until_next_monday)
+
+    days_info = []
+    days_jp = ['月', '火', '水', '木', '金', '土', '日']
+    days_en = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+
+    for i in range(7):
+        target_date = next_monday + timedelta(days=i)
+        days_info.append({
+            'display': target_date.strftime('%m/%d'),
+            'day_jp': days_jp[i],
+            'day_en': days_en[i]
+        })
+
+    return {
+        "username": username,
+        "next_monday": next_monday.strftime('%Y-%m-%d'),
+        "days_info": days_info,
+        "current_shifts": get_weekly_shift(username)
+    }
+
+# ユーザー管理画面用の関数を追加
+def get_weekly_shift_time_map(username):
+    """
+    管理画面用：
+    月〜日のシフト時間を文字列で返す
+    なければ「－」
+    """
+    init_db()
+
+    days_en = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+    result = {day: '－' for day in days_en}
+
+    with sqlite3.connect(DB_PATH) as conn:
+        conn.row_factory = sqlite3.Row
+        cur = conn.execute(
+            """
+            SELECT date, start_h, start_m, end_h, end_m
+            FROM shifts
+            WHERE username=?
+            """,
+            (username,)
+        )
+
+        for row in cur.fetchall():
+            date_obj = datetime.strptime(row["date"], "%Y-%m-%d")
+            weekday = date_obj.weekday()  # 月=0
+
+            start = f'{row["start_h"]}:{row["start_m"].zfill(2)}'
+            end = f'{row["end_h"]}:{row["end_m"].zfill(2)}'
+
+            result[days_en[weekday]] = f'{start}〜{end}'
+
+    return result
+

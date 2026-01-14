@@ -1,4 +1,5 @@
 # wage_manager.py
+from routes import user_manager # ユーザーのトークン管理用にインポート
 
 # =========================
 # 時給管理
@@ -59,7 +60,6 @@ def save_wage(username: str, shift_hour: float):
     salary_per_hour = get_salary()
     salary = shift_hour * salary_per_hour
     token = shift_hour * 5
-
     # 履歴保存
     wage_records.append({
         "username": username,
@@ -68,11 +68,11 @@ def save_wage(username: str, shift_hour: float):
         "salary": salary,
         "token": token
     })
-
     # tokenをユーザーごとに加算
     if username not in user_tokens:
         user_tokens[username] = 0
-
     user_tokens[username] += token
+    # tokenは user_manager に渡す
+    user_manager.add_token(username, token)
 
     return salary, token
