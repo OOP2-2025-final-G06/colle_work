@@ -1,6 +1,7 @@
 /* 全体 */
 body {
     font-family: Arial, sans-serif;
+    text-align: center;
     margin: 0;
     padding: 20px;
     background-color: #f5f7fa;
@@ -9,56 +10,6 @@ body {
 h2 {
     margin-bottom: 20px;
     color: #333;
-}
-
-/* ダッシュボードコンテナ */
-.dashboard-container {
-    gap: 20px;
-    padding: 20px;
-    min-height: 100vh;
-}
-/* 左パネル */
-.left-panel {
-    position: fixed;      /* ← 固定 */
-    top: 0;
-    left: 0;
-    width: 230px;
-    height: 100vh;        /* 画面の高さいっぱい */
-    background-color: #ffffff;
-    border-right: 1px solid #e0e0e0;
-    padding: 20px;
-    box-sizing: border-box;
-}
-/* 右メインパネル */
-.main-panel {
-    margin-left: 240px;   /* ← left-panel 幅 + 余白 */
-    padding: 20px;
-    max-width: 1000px;
-}
-
-/* 左側のメニューのボタン設定 */
-.menu-btn {
-    display: block;
-    padding: 12px 14px;
-    background-color: #ffffff;
-    border: 1px solid #dcdcdc;
-    border-radius: 6px;
-    text-align: center;
-    font-weight: bold;
-    color: #333;
-    text-decoration: none;
-    transition: all 0.2s ease;
-}
-/* ホバー時 */
-.menu-btn:hover {
-    background-color: #4c66af;
-    color: #ffffff;
-    transform: translateX(3px);
-}
-/* 今いるページ用（active） */
-.menu-btn.active {
-    background-color: #4c66af;
-    color: #ffffff;
 }
 
 /*　ユーザー一覧テーブル */
@@ -88,9 +39,6 @@ h2 {
 /* 行のホバー */
 .user-table tr:hover {
     background-color: #f1f3f9;
-}
-.menu li {
-    list-style: none;
 }
 
 /*   トークン表示 */

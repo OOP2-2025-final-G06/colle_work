@@ -1,103 +1,70 @@
-# routes/user_manager.py
-import sqlite3
+users = {
+    "testuser": "password"
+}
 
-DB_NAME = "database.db"
+# 各ユーザーのトークン数を管理
+user_tokens = {
+    "testuser": 0
+}
 
-
-def get_db():
-    return sqlite3.connect(DB_NAME)
-
-
-def init_db():
-    conn = get_db()
-    c = conn.cursor()
-    c.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            username TEXT PRIMARY KEY,
-            password TEXT NOT NULL,
-            token INTEGER DEFAULT 0,
-            salary INTEGER DEFAULT 1000
-        )
-    """)
-    conn.commit()
-    conn.close()
-
+wage_records = []
 
 def get_users():
-    conn = get_db()
-    c = conn.cursor()
-    c.execute("SELECT username FROM users")
-    users = [row[0] for row in c.fetchall()]
-    conn.close()
+    """全ユーザー情報を返す"""
     return users
 
-
 def register_user(username, password):
-    conn = get_db()
-    c = conn.cursor()
-    try:
-        c.execute(
-            "INSERT INTO users (username, password) VALUES (?, ?)",
-            (username, password)
-        )
-        conn.commit()
-        return True
-    except sqlite3.IntegrityError:
+    """
+    新規登録処理
+    登録成功なら True, 重複していて失敗なら False を返す
+    """
+    if username in users:
         return False
-    finally:
-        conn.close()
-
+    users[username] = password
+    
+    # トークン初期化
+    if username not in user_tokens:
+        user_tokens[username] = 0
+    return True
 
 def verify_user(username, password):
-    conn = get_db()
-    c = conn.cursor()
-    c.execute(
-        "SELECT 1 FROM users WHERE username=? AND password=?",
-        (username, password)
-    )
-    result = c.fetchone()
-    conn.close()
-    return result is not None
+    """
+    ログイン認証処理
+    成功なら True, 失敗なら False を返す
+    """
+    if username in users and users[username] == password:
+        # トークン初期化（念の為）
+        if username not in user_tokens:
+            user_tokens[username] = 0
+        return True
+    return False
 
+def save_wage(username, shift_hour, salary_per_hour):
+    """給与計算とトークン保存を行い、結果を返す"""
+    salary = shift_hour * salary_per_hour
+    token = shift_hour * 5
+
+    # 履歴保存
+    wage_records.append({
+        "username": username,
+        "shift_hour": shift_hour,
+        "salary_per_hour": salary_per_hour,
+        "salary": salary,
+        "token": token
+    })
+
+    # tokenをユーザーごとに加算
+    if username not in user_tokens:
+        user_tokens[username] = 0
+    user_tokens[username] += token
+
+    return salary, token
+
+# ユーザーのトークン管理用関数
+def add_token(username, token):
+    if username not in user_tokens:
+        user_tokens[username] = 0
+    user_tokens[username] += token
 
 def get_user_token(username):
-    conn = get_db()
-    c = conn.cursor()
-    c.execute("SELECT token FROM users WHERE username=?", (username,))
-    row = c.fetchone()
-    conn.close()
-    return row[0] if row else 0
-
-
-def add_token(username, token):
-    conn = get_db()
-    c = conn.cursor()
-    c.execute(
-        "UPDATE users SET token = token + ? WHERE username=?",
-        (token, username)
-    )
-    conn.commit()
-    conn.close()
-
-
-def set_salary(username, salary):
-    conn = get_db()
-    c = conn.cursor()
-    c.execute(
-        "UPDATE users SET salary=? WHERE username=?",
-        (salary, username)
-    )
-    conn.commit()
-    conn.close()
-
-
-def get_salary(username):
-    conn = get_db()
-    c = conn.cursor()
-    c.execute(
-        "SELECT salary FROM users WHERE username=?",
-        (username,)
-    )
-    row = c.fetchone()
-    conn.close()
-    return row[0] if row else 1000
+    return user_tokens.get(username, 0)
