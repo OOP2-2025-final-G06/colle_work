@@ -3,64 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>時給登録</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='login_style.css') }}">
-    <style>
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            text-align: center;
-            padding-top: 50px;
-        }
-        .form-box {
-            background-color: #f9f9f9;
-            padding: 30px;
-            border-radius: 8px;
-            display: inline-block;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        input[type="number"] {
-            padding: 10px;
-            font-size: 16px;
-            width: 150px;
-            text-align: right;
-        }
-        button {
-            margin-top: 20px;
-            width: 200px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-    <div class="container">
-        <h2>時給設定</h2>
-        <p>あなたの現在の時給を入力してください。</p>
-        
-        <div class="form-box">
-            <form method="post">
-                <label>
-                    時給：
-                    <input
-                        type="number"
-                        name="salary_per_hour"
-                        value="{{ salary }}"
-                        min="1"
-                        placeholder="例: 1000"
-                        required
-                    > 円
-                </label>
-                <br>
-                <button type="submit">設定を保存する</button>
-            </form>
-            
-            {% if error %}
-                <p style="color:red;">{{ error }}</p>
-            {% endif %}
-        </div>
+    <h2>時給登録</h2>
 
-        <br><br>
-        <a href="{{ url_for('top') }}">トップページに戻る</a>
-    </div>
+    <form method="post">
+        <label for="salary_per_hour">時給（円）：</label>
+        <input
+            type="number"
+            id="salary_per_hour"
+            name="salary_per_hour"
+            value="{{ salary }}"
+            min="0"
+            required
+        >
+        <button type="submit">登録</button>
+    </form>
+
+    <br>
+
+    <a href="{{ url_for('top') }}">トップに戻る</a>
 
 </body>
 </html>

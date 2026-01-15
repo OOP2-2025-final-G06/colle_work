@@ -1,4 +1,6 @@
-/* 全体 */
+/* =========================
+   全体
+========================= */
 body {
     font-family: Arial, sans-serif;
     text-align: center;
@@ -12,7 +14,9 @@ h2 {
     color: #333;
 }
 
-/*　ユーザー一覧テーブル */
+/* =========================
+   ユーザー一覧テーブル
+========================= */
 .user-table {
     margin: 0 auto;
     border-collapse: collapse;
@@ -41,13 +45,17 @@ h2 {
     background-color: #f1f3f9;
 }
 
-/*   トークン表示 */
+/* =========================
+   トークン表示
+========================= */
 .user-table td:nth-child(3) {
     font-weight: bold;
     color: #ff9800;
 }
 
-/*   シフト表　 */
+/* =========================
+   シフト表
+========================= */
 .shift-table {
     width: 100%;
     border-collapse: collapse;
@@ -81,7 +89,9 @@ h2 {
     color: #999;
 }
 
-/*  戻るリンク */
+/* =========================
+   戻るリンク
+========================= */
 a {
     display: inline-block;
     margin-top: 20px;
