@@ -130,7 +130,7 @@ const game = {
         let dmg = game.stats.atk * dmgMult * (0.9 + Math.random() * 0.2);
         let isCrit = Math.random() < (game.stats.critRate + critBonus);
         if (isCrit) dmg *= 2.0;
-        dmg = Math.floor(dmg); 
+        dmg = Math.floor(dmg);
         if(dmg < 1) dmg = 1;
 
         game.enemy.currentHp -= dmg;
@@ -146,7 +146,7 @@ const game = {
 
     onWin: () => {
         // 報酬計算
-        const baseReward = Math.floor(game.enemy.maxHp / 10); 
+        const baseReward = Math.floor(game.enemy.maxHp / 10);
         const variance = Math.random() * 1.5 + 0.5;
         let reward = Math.floor(baseReward * variance) + 2;
 
@@ -156,10 +156,10 @@ const game = {
             effects.explodeCoins(reward);
             effects.addText("+" + reward, canvas.width/2, canvas.height/2, "#f1c40f", true);
             api.saveGame();
-            setTimeout(() => { 
-                game.stage++; 
-                game.spawnEnemy(); 
-                game.updateUI(); 
+            setTimeout(() => {
+                game.stage++;
+                game.spawnEnemy();
+                game.updateUI();
             }, 600);
         } else {
             doubleUp.init(reward);

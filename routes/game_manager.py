@@ -1,10 +1,10 @@
 import sqlite3
 import json
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify
 
 game_bp = Blueprint('game_api', __name__)
 
-DB_PATH = "game.db"
+DB_PATH = "user_data.db"
 
 def init_db():
     """ゲーム用データベースとテーブルの初期化"""
@@ -69,10 +69,13 @@ def add_user_token_to_db(username, amount):
 
 @game_bp.route('/api/get_data', methods=['GET'])
 def get_data():
-    if 'username' not in session:
-        return jsonify({"error": "Unauthorized"}), 401
+    # URLパラメータからusernameを取得します
+    # 例: /api/get_data?username=Player1
+    username = request.args.get('username')
+
+    if not username:
+        return jsonify({"error": "Username is required"}), 400
     
-    username = session['username']
     conn = get_db_connection()
     user = conn.execute('SELECT * FROM player_data WHERE username = ?', (username,)).fetchone()
     
@@ -93,6 +96,7 @@ def get_data():
     conn.close()
 
     return jsonify({
+        "username": user['username'], # 確認用にusernameも返却
         "user_token": user['user_token'],
         "stage": user['stage'],
         "stats": json.loads(user['stats_json'])
@@ -100,14 +104,17 @@ def get_data():
 
 @game_bp.route('/api/update_data', methods=['POST'])
 def update_data():
-    if 'username' not in session:
-        return jsonify({"error": "Unauthorized"}), 401
-
-    username = session['username']
+    # POSTデータそのものを受け取ります
     new_data = request.json
     
     if not new_data:
         return jsonify({"error": "No data"}), 400
+
+    # JSONデータ内にusernameが含まれていることを期待します
+    username = new_data.get('username')
+
+    if not username:
+        return jsonify({"error": "Username is required in JSON body"}), 400
 
     stats_str = json.dumps(new_data.get("stats"))
     
@@ -120,4 +127,4 @@ def update_data():
     conn.commit()
     conn.close()
     
-    return jsonify({"status": "saved"})
+    return jsonify({"status": "saved", "username": username})
