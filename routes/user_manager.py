@@ -1,70 +1,64 @@
-users = {
-    "testuser": "password"
-}
+# routes/user_manager.py
+import sqlite3
+from routes import game_manager  # ゲームDBからトークンを取得
 
-# 各ユーザーのトークン数を管理
-user_tokens = {
-    "testuser": 0
-}
+DB_PATH = "user_data.db"
 
-wage_records = []
+def init_db():
+    """ユーザー管理用テーブルを作成（パスワードのみ）"""
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            username TEXT PRIMARY KEY,
+            password TEXT
+        )
+    """)
+    conn.commit()
+    conn.close()
 
-def get_users():
-    """全ユーザー情報を返す"""
-    return users
+init_db()
 
+# -------------------------
+# ユーザー管理
+# -------------------------
 def register_user(username, password):
-    """
-    新規登録処理
-    登録成功なら True, 重複していて失敗なら False を返す
-    """
-    if username in users:
+    """新規登録"""
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    try:
+        c.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
+        conn.commit()
+        return True
+    except sqlite3.IntegrityError:
         return False
-    users[username] = password
-    
-    # トークン初期化
-    if username not in user_tokens:
-        user_tokens[username] = 0
-    return True
+    finally:
+        conn.close()
 
 def verify_user(username, password):
+    """ログイン認証"""
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, password))
+    user = c.fetchone()
+    conn.close()
+    return user is not None
+
+def get_all_users():
     """
-    ログイン認証処理
-    成功なら True, 失敗なら False を返す
+    全ユーザーとトークンを返す {username: token}
+    トークンはゲームDBから取得
     """
-    if username in users and users[username] == password:
-        # トークン初期化（念の為）
-        if username not in user_tokens:
-            user_tokens[username] = 0
-        return True
-    return False
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT username FROM users")
+    users = [row[0] for row in c.fetchall()]
+    conn.close()
 
-def save_wage(username, shift_hour, salary_per_hour):
-    """給与計算とトークン保存を行い、結果を返す"""
-    salary = shift_hour * salary_per_hour
-    token = shift_hour * 5
-
-    # 履歴保存
-    wage_records.append({
-        "username": username,
-        "shift_hour": shift_hour,
-        "salary_per_hour": salary_per_hour,
-        "salary": salary,
-        "token": token
-    })
-
-    # tokenをユーザーごとに加算
-    if username not in user_tokens:
-        user_tokens[username] = 0
-    user_tokens[username] += token
-
-    return salary, token
-
-# ユーザーのトークン管理用関数
-def add_token(username, token):
-    if username not in user_tokens:
-        user_tokens[username] = 0
-    user_tokens[username] += token
+    # ゲームDBからトークン取得
+    user_tokens = {u: game_manager.get_user_token_from_db(u) for u in users}
+    return user_tokens
 
 def get_user_token(username):
-    return user_tokens.get(username, 0)
+    """特定ユーザーのトークン取得（ゲームDB参照）"""
+    return game_manager.get_user_token_from_db(username)

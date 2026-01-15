@@ -6,7 +6,7 @@ from routes import game_manager
 
 # 設定 (Constants)
 
-TOKEN_PER_HOUR = 10
+TOKEN_PER_HOUR = 30
 DB_PATH = "database.db"  
 
 
@@ -113,5 +113,6 @@ def save_wage(username: str, shift_hour: float, date_str: str = None):
 
     # DBにトークン加算
     game_manager.add_user_token_to_db(username, token)
+    # user_manager.add_token(username, token)
 
     return salary, token
