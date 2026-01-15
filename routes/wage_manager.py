@@ -6,7 +6,7 @@ from routes import game_manager
 
 # 設定 (Constants)
 
-TOKEN_PER_HOUR = 10
+TOKEN_PER_HOUR = 30
 DB_PATH = "database.db"  
 
 
@@ -49,16 +49,13 @@ def set_salary(username: str, value: int):
 
 
 # ユーザー & token 管理
-
-
 def get_user_token(username: str) -> int:
     return game_manager.get_user_token_from_db(username)
 
-
-
-
+# =========================
+# 給与履歴（簡易）
+# =========================
 wage_records = []
-
 def get_wage_records():
     return wage_records
 
@@ -100,6 +97,7 @@ def save_wage(username: str, shift_hour: float, date_str: str = None):
     salary_per_hour = get_salary(username) # ここでDBから時給を取得
     salary = int(shift_hour * salary_per_hour)
     token = int(shift_hour * TOKEN_PER_HOUR)
+     # トークンをDBに加算
 
     # 履歴保存
     wage_records.append({
@@ -112,6 +110,6 @@ def save_wage(username: str, shift_hour: float, date_str: str = None):
     })
 
     # DBにトークン加算
-    game_manager.add_user_token_to_db(username, token)
+    user_manager.add_token(username, token) # user_managerに反映
 
     return salary, token
