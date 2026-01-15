@@ -10,16 +10,6 @@
 | k24026 | 内田空良 | ユーザーの管理, 画面のCSSの作成　|
 | k24074 | 塩野純平 |　時給の計算, トークンの変換　|
 
-## 概要:
-> このアプリでは以下のことができます
-
-- シフトの登録・ユーザー一覧の確認・新規ユーザの追加・ミニゲーム
-
-- top画面で今週と来週のシフトの確認を一目でできる
-
-- 登録した時間に対応してトークンがもらえる。このトークンを使ってゲームを行える。
-
-- ゲーム内容は、集めたトークンでキャラクターを強化して敵を倒して進む
 
 ## 各ページのスクーリーンショット
 >ログイン・新規ユーザー登録
@@ -33,35 +23,110 @@
 >時給登録
 ![]
 
-## アピールポイント
 
-##  ディレクトリ構成
-```text
-COLLE_WORK/
-├── app.py                # アプリケーション起動ファイル
-├── routes/               # バックエンド処理（Blueprint）
-│   ├── game_manager.py     # ゲーム機能のロジック・DB連携
-│   ├── shift_manager.py    # シフト登録・計算ロジック
-│   ├── user_manager.py     # ユーザー認証・一覧取得
-│   └── wage_manager.py     # 給与計算・時給設定・DB管理
-├── static/               # 静的ファイル (CSS, JS)
-│   ├── game.js             # ゲームのメインロジック
-│   ├── game_style.css      # ゲーム画面用CSS
-│   ├── login_style.css     # ログイン・登録画面用CSS
-│   ├── shift_style.css     # シフト登録画面用CSS
-│   ├── style.css           # 共通スタイル定義
-│   ├── top_style.css       # トップページ用CSS
-│   └── user_style.css      # ユーザーリスト画面用CSS
-└── templates/            # 画面テンプレート (HTML)
-    ├── game.html           # ゲーム画面
-    ├── login.html          # ログイン画面
-    ├── register.html       # 新規登録画面
-    ├── shift_register.html # シフト登録画面
-    ├── top.html            # トップページ（ダッシュボード）
-    ├── user_list.html      # ユーザー一覧画面
-    └── wage_register.html  # 時給設定画面
+## 各ページのスクーリーンショット
+>ログイン・新規ユーザー登録
+![]
+>ユーザーリスト
+![]
+>シフト登録
+![]
+>ゲーム
+![]
+>時給登録
+![]
+
+# COLLE_WORK アプリケーション仕様書（技術者）
+
+## 1. 概要
+「COLLE_WORK」は、アルバイトの**シフト管理・給料計算機能**と、労働対価として得られる報酬（トークン）を用いた**RPG風ミニゲーム**を融合させたWebアプリケーションです。
+日々の勤怠入力をゲームの進行（キャラクターの強化）と結びつけることで、継続的な利用を促すゲーミフィケーション要素を取り入れています。
+
+---
+
+## 2. 機能一覧
+
+### (1) シフト・勤怠管理
+* **週間シフト登録**: 1週間ごとの希望シフト時間を、ドラッグ不要の直感的なUIで登録。
+* **カレンダー表示**: トップ画面にて「今週」と「来週」のシフトを表形式で確認。
+* **全体シフト共有**: 他のユーザーのシフト状況をリスト形式で閲覧可能。
+
+### (2) 給与管理 (Wage Manager)
+* **時給設定**: ユーザーごとに独自の時給を設定・保存（データベース管理）。
+* **自動計算**: 登録されたシフト時間に基づき、以下の項目をリアルタイムで集計・表示。
+    * 現在の時給
+    * 今月の給料（実績）
+    * 今年の年収（実績）
+
+### (3) ゲーム連携 (Token Quest)
+* **トークンシステム**: 労働時間（シフト登録）に応じて、ゲーム内通貨「トークン」を自動付与。
+    * レート: `TOKEN_PER_HOUR`（デフォルト: 時給×10倍相当など設定可）
+* **RPGバトル**: Canvas APIを用いたリッチな戦闘画面。
+    * 攻撃アクション（通常攻撃 / 強攻撃）
+    * ステータス強化（攻撃力UP / 会心率UP）
+    * オートバトルモード
+* **ダブルアップ機能**: 敵撃破時の報酬を賭けた「High & Low」ミニゲーム。
+
+### (4) ユーザー管理
+* **認証**: ユーザー名・パスワードによる新規登録およびログイン。
+* **セッション**: Flask Sessionを用いたログイン状態の維持。
+
+---
+
+## 3. システム構成・技術スタック
+
+* **言語**: Python 3.x
+* **フレームワーク**: Flask
+* **データベース**: SQLite3
+* **フロントエンド**: HTML5, CSS3, JavaScript (Canvas API)
+
+---
+
+## 4. データベース設計 (Schema)
+
+本システムでは、用途に合わせて2つのSQLiteデータベースファイルを使用します。
+
+### ① `database.db` (勤怠・給与用)
+
+**1. shifts テーブル** (シフト情報)
+| カラム名 | 型 | 説明 |
+| :--- | :--- | :--- |
+| `id` | INTEGER | プライマリキー (AUTOINCREMENT) |
+| `username` | TEXT | ユーザー名 |
+| `date` | TEXT | 日付 ("YYYY-MM-DD") |
+| `start_h` | TEXT | 開始時 |
+| `start_m` | TEXT | 開始分 |
+| `end_h` | TEXT | 終了時 |
+| `end_m` | TEXT | 終了分 |
+| `shift_hour` | REAL | 計算用勤務時間 (小数) |
+| **制約** | UNIQUE | (username, date) の組み合わせは一意 |
+
+**2. user_wages テーブル** (時給設定)
+| カラム名 | 型 | 説明 |
+| :--- | :--- | :--- |
+| `username` | TEXT | ユーザー名 (プライマリキー) |
+| `salary` | INTEGER | 設定時給額 |
+
+### ② `game.db` (ゲームデータ用)
+
+**1. player_data テーブル** (プレイヤー状況)
+| カラム名 | 型 | 説明 |
+| :--- | :--- | :--- |
+| `id` | INTEGER | プライマリキー (AUTOINCREMENT) |
+| `username` | TEXT | ユーザー名 (UNIQUE) |
+| `user_token` | INTEGER | 所持トークン数 |
+| `stage` | INTEGER | 現在の到達ステージ |
+| `stats_json` | TEXT | ステータス情報のJSON文字列 |
+
+**stats_json の構造例:**
+```json
+{
+  "atk": 5,        // 攻撃力
+  "atkLevel": 2,   // 攻撃レベル
+  "critRate": 0.07,// 会心率
+  "critLevel": 2   // 会心レベル
+}
 ```
-
 
 ## 動作条件: require
 
@@ -92,7 +157,33 @@ json
 - また、ログインしたユーザーの今週と来週のシフトを見ることができます。
 
 
-$ python app.py
-# Try accessing "http://localhost:8080" in your browser.
-```
 
+## アクセスするURL
+ Try accessing "http://localhost:8080" in your browser.
+
+## ディレクトリ構成
+```text
+COLLE_WORK/
+├── app.py                # アプリケーション起動ファイル
+├── routes/               # バックエンド処理（Blueprint）
+│   ├── game_manager.py     # ゲーム機能のロジック・DB連携
+│   ├── shift_manager.py    # シフト登録・計算ロジック
+│   ├── user_manager.py     # ユーザー認証・一覧取得
+│   └── wage_manager.py     # 給与計算・時給設定・DB管理
+├── static/               # 静的ファイル (CSS, JS)
+│   ├── game.js             # ゲームのメインロジック
+│   ├── game_style.css      # ゲーム画面用CSS
+│   ├── login_style.css     # ログイン・登録画面用CSS
+│   ├── shift_style.css     # シフト登録画面用CSS
+│   ├── style.css           # 共通スタイル定義
+│   ├── top_style.css       # トップページ用CSS
+│   └── user_style.css      # ユーザーリスト画面用CSS
+└── templates/            # 画面テンプレート (HTML)
+    ├── game.html           # ゲーム画面
+    ├── login.html          # ログイン画面
+    ├── register.html       # 新規登録画面
+    ├── shift_register.html # シフト登録画面
+    ├── top.html            # トップページ（ダッシュボード）
+    ├── user_list.html      # ユーザー一覧画面
+    └── wage_register.html  # 時給設定画面
+```
