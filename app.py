@@ -66,15 +66,15 @@ def top():
 
 @app.route("/user_list")
 def user_list():
-    all_users = user_manager.get_users()
-    user_shifts = {}
-    for username in all_users:
-        user_shifts[username] = shift_manager.get_weekly_shift_time_map(username)
-    return render_template("user_list.html",
-                            users=all_users,
-                            user_tokens=user_manager.user_tokens,
-                            user_shifts=user_shifts
-                            )
+    all_users = user_manager.get_all_users()  # ゲームDBからトークン取得
+    user_shifts = {u: shift_manager.get_weekly_shift_time_map(u) for u in all_users.keys()}
+
+    return render_template(
+        "user_list.html",
+        users=list(all_users.keys()),
+        user_tokens=all_users,
+        user_shifts=user_shifts
+    )
 
 @app.route("/wage_register", methods=["GET", "POST"])
 def wage_register():

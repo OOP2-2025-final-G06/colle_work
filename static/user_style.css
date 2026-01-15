@@ -42,7 +42,7 @@ h2 {
 }
 
 /*   トークン表示 */
-.user-table td:nth-child(3) {
+.user-table > tbody > tr > td:nth-child(3) {
     font-weight: bold;
     color: #ff9800;
 }
@@ -57,13 +57,14 @@ h2 {
 
 .shift-table th,
 .shift-table td {
+    font-weight: bold;
     border: 1px solid #ccc;
     padding: 4px;
 }
 
 /* シフト表ヘッダー */
 .shift-table th {
-    background-color: #e8ebf5;
+    background-color: #4398fa;
     font-weight: normal;
 }
 
