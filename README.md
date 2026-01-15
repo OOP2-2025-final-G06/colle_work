@@ -10,7 +10,7 @@
 | k24026 | 内田空良 | ユーザーの管理, 画面のCSSの作成　|
 | k24074 | 塩野純平 |　時給の計算, トークンの変換　|
 
-概要:
+## 概要:
 > このアプリでは以下のことができます
 
 - シフトの登録・ユーザー一覧の確認・新規ユーザの追加・ミニゲーム
@@ -21,8 +21,7 @@
 
 - ゲーム内容は、集めたトークンでキャラクターを強化して敵を倒して進む
 
-
-## アピールポイント
+## 各ページのスクーリーンショット
 >ログイン・新規ユーザー登録
 ![]
 >ユーザーリスト
@@ -34,36 +33,34 @@
 >時給登録
 ![]
 
-この部分に、発表に替わる内容を書きます。
-アプリケーション動作のサンプル動画などを貼り付けられると良いです。
-※動画の貼り付けは、GIFアニメーションなどでも可です。
+## アピールポイント
 
-
-##　　ファイル構成
-
+##  ディレクトリ構成
+```text
 COLLE_WORK/
-    |- routes/
-    |    └ game_manager.py
-    |    └ shift_manager.py
-    |    └ user_manager.py
-    |    └ wage_manager.py
-    |- static/
-    |    └ game_style.css
-    |    └ game.js
-    |    └ login_style.css
-    |    └ shift_style.css
-    |    └ style.css
-    |    └ top_style.css
-    |    └ user_style.css
-    |- templates/
-    |    └ game.html
-    |    └ login.html
-    |    └ register.html
-    |    └ shift_register.html
-    |    └ top.html
-    |    └ user_list.html
-    |    └ wage_register.html
-    └- app.py
+├── app.py                # アプリケーション起動ファイル
+├── routes/               # バックエンド処理（Blueprint）
+│   ├── game_manager.py     # ゲーム機能のロジック・DB連携
+│   ├── shift_manager.py    # シフト登録・計算ロジック
+│   ├── user_manager.py     # ユーザー認証・一覧取得
+│   └── wage_manager.py     # 給与計算・時給設定・DB管理
+├── static/               # 静的ファイル (CSS, JS)
+│   ├── game.js             # ゲームのメインロジック
+│   ├── game_style.css      # ゲーム画面用CSS
+│   ├── login_style.css     # ログイン・登録画面用CSS
+│   ├── shift_style.css     # シフト登録画面用CSS
+│   ├── style.css           # 共通スタイル定義
+│   ├── top_style.css       # トップページ用CSS
+│   └── user_style.css      # ユーザーリスト画面用CSS
+└── templates/            # 画面テンプレート (HTML)
+    ├── game.html           # ゲーム画面
+    ├── login.html          # ログイン画面
+    ├── register.html       # 新規登録画面
+    ├── shift_register.html # シフト登録画面
+    ├── top.html            # トップページ（ダッシュボード）
+    ├── user_list.html      # ユーザー一覧画面
+    └── wage_register.html  # 時給設定画面
+```
 
 
 ## 動作条件: require
@@ -77,7 +74,7 @@ Python 3.10 以上
 
 python app.py
 
-# python lib
+## python lib
 Flask==3.0.3
 sqlite3
 datetime
@@ -98,3 +95,4 @@ json
 $ python app.py
 # Try accessing "http://localhost:8080" in your browser.
 ```
+
