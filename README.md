@@ -21,6 +21,7 @@
 
 - ゲーム内容は、集めたトークンでキャラクターを強化して敵を倒して進む
 
+
 ## アピールポイント
 >ログイン・新規ユーザー登録
 ![]
@@ -37,14 +38,33 @@
 アプリケーション動作のサンプル動画などを貼り付けられると良いです。
 ※動画の貼り付けは、GIFアニメーションなどでも可です。
 
-##　　フォルダ構造
+
+##　　ファイル構成
 
 COLLE_WORK/
+    |- routes/
+    |    └ game_manager.py
+    |    └ shift_manager.py
+    |    └ user_manager.py
+    |    └ wage_manager.py
     |- static/
-    |    └
+    |    └ game_style.css
+    |    └ game.js
+    |    └ login_style.css
+    |    └ shift_style.css
+    |    └ style.css
+    |    └ top_style.css
+    |    └ user_style.css
     |- templates/
-    |    └
+    |    └ game.html
+    |    └ login.html
+    |    └ register.html
+    |    └ shift_register.html
+    |    └ top.html
+    |    └ user_list.html
+    |    └ wage_register.html
     └- app.py
+
 
 ## 動作条件: require
 
@@ -53,12 +73,16 @@ pip install flask（flaskのインストール）
 
 Python 3.10 以上
 
+##　実行手順
 
+python app.py
 
 # python lib
 Flask==3.0.3
-peewee==3.17.7
-```
+sqlite3
+datetime
+json
+
 
 ## 使い方: usage
 
