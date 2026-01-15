@@ -3,76 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>シフト登録</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='shift_style.css') }}">
+    <title>来週のシフト登録</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{ range(1, 1000) | random }}">
 </head>
 <body>
-    <div class="dashboard-container">
-        <div class="left-panel">
-            <h1 class="title">コレワーク</h1>
-            <div class="menu">
-                <ul>
-                    <li><a href="{{ url_for('top') }}">ホーム</a></li>
-                    <li><a href="{{ url_for('shift_register') }}">シフト登録</a></li>
-                    <li><a href="{{ url_for('wage_register') }}">時給設定</a></li>
-                    <li><a href="{{ url_for('game') }}">ゲーム</a></li>
-                    <li><a href="{{ url_for('user_list') }}">みんなのシフト</a></li>
-                    <li style="margin-top:20px;"><a href="{{ url_for('login') }}">ログアウト</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="main-panel">
-            <h2>来週のシフト登録</h2>
-            <p>対象期間：{{ data.next_monday }} 〜 </p>
+    <div class="container">
+        <h2>{{ data.username }} さんのシフト登録</h2>
+        <a href="{{ url_for('top') }}">TOPへ戻る</a>
+        
+        <form action="/shift_register" method="POST">
+            <input type="hidden" name="base_date" value="{{ data.next_monday }}">
             
-            <form action="/shift_register" method="POST">
-                <input type="hidden" name="base_date" value="{{ data.next_monday }}">
-                
-                <div class="days-grid">
-                    {% for day in data.days_info %}
-                    <div class="day-card">
-                        <div class="day-header">{{ day.display }} ({{ day.day_jp }})</div>
-                        
-                        <div class="time-select-group">
-                            <select name="{{ day.day_en }}_start_h">
-                                <option value="">--</option>
-                                {% for h in range(0, 24) %}
-                                <option value="{{ '%02d'|format(h) }}">{{ '%02d'|format(h) }}</option>
-                                {% endfor %}
-                            </select> : 
-                            <select name="{{ day.day_en }}_start_m">
-                                <option value="">--</option>
-                                {% for m in ['00', '15', '30', '45'] %}
-                                <option value="{{ m }}">{{ m }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        
-                        <div style="text-align:center; color:#ccc;">▼</div>
+            <div>
+                {% for day in data.days_info %}
+                <div style="border: 1px solid #ccc; margin-bottom: 10px; padding: 10px;">
+                    <p><strong>{{ day.display }} ({{ day.day_jp }})</strong></p>
+                    
+                    <select name="{{ day.day_en }}_start_h">
+                        <option value="">時</option>
+                        {% for h in range(0, 24) %}
+                        <option value="{{ '%02d'|format(h) }}">{{ '%02d'|format(h) }}</option>
+                        {% endfor %}
+                    </select> : 
+                    <select name="{{ day.day_en }}_start_m">
+                        <option value="">分</option>
+                        {% for m in ['00', '15', '30', '45'] %}
+                        <option value="{{ m }}">{{ m }}</option>
+                        {% endfor %}
+                    </select>
+                    
+                    <span> 〜 </span>
 
-                        <div class="time-select-group">
-                            <select name="{{ day.day_en }}_end_h">
-                                <option value="">--</option>
-                                {% for h in range(0, 24) %}
-                                <option value="{{ '%02d'|format(h) }}">{{ '%02d'|format(h) }}</option>
-                                {% endfor %}
-                            </select> : 
-                            <select name="{{ day.day_en }}_end_m">
-                                <option value="">--</option>
-                                {% for m in ['00', '15', '30', '45'] %}
-                                <option value="{{ m }}">{{ m }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    {% endfor %}
+                    <select name="{{ day.day_en }}_end_h">
+                        <option value="">時</option>
+                        {% for h in range(0, 24) %}
+                        <option value="{{ '%02d'|format(h) }}">{{ '%02d'|format(h) }}</option>
+                        {% endfor %}
+                    </select> : 
+                    <select name="{{ day.day_en }}_end_m">
+                        <option value="">分</option>
+                        {% for m in ['00', '15', '30', '45'] %}
+                        <option value="{{ m }}">{{ m }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-                
-                <button type="submit" class="submit-btn">シフトを登録する</button>
-            </form>
+                {% endfor %}
+            </div>
             
-        </div>
+            <button type="submit">登録</button>
+        </form>
+
+        <hr>
+
+        {% if data.current_shifts %}
+        <h3>あなたの登録履歴（直近7件）</h3>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>日付</th>
+                    <th>勤務時間</th>
+                    <th>合計</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in data.current_shifts %}
+                <tr>
+                    <td>{{ s.date }}</td>
+                    <td>{{ s.start_h }}:{{ s.start_m }} 〜 {{ s.end_h }}:{{ s.end_m }}</td>
+                    <td>{{ s.shift_hour }}h</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
     </div>
 </body>
 </html>
