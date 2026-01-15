@@ -1,0 +1,141 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f7fa;
+}
+
+.dashboard-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.left-panel {
+    width: 200px;
+    flex-shrink: 0;
+}
+
+.main-panel {
+    flex-grow: 1;
+    max-width: 1000px;
+}
+
+/* 左メニュー（共通デザイン） */
+.title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.menu li {
+    margin-bottom: 10px;
+}
+
+.menu a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.menu a:hover {
+    background-color: #e0e0e0;
+}
+
+/*   メインコンテンツ*/
+h2 {
+    color: #333;
+    border-left: 5px solid #4c66af;
+    padding-left: 10px;
+    margin-bottom: 20px;
+}
+
+/* 入力フォームのグリッドレイアウト */
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* 1日分のカードデザイン */
+.day-card {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border: 1px solid #e0e0e0;
+}
+
+.day-header {
+    font-weight: bold;
+    color: #4c66af;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+/* セレクトボックスのレイアウト */
+.time-select-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-bottom: 5px;
+}
+
+select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+}
+
+/* 登録ボタン */
+.submit-btn {
+    background-color: #4c66af;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.3s;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.submit-btn:hover {
+    background-color: #3b508b;
+}
+
+/* 履歴テーブル */
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-top: 10px;
+}
+
+.history-table th, .history-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.history-table th {
+    background: #f0f0f0;
+    color: #333;
+    font-weight: bold;
+}
