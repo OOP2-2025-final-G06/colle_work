@@ -12,8 +12,6 @@ app = Flask(__name__)
 app.secret_key = "secret_key_for_session"
 
 app.register_blueprint(game_manager.game_bp)
-# DB初期化
-user_manager.init_db()
 game_manager.init_db()
 
 @app.route("/", methods=["GET", "POST"])
@@ -70,18 +68,13 @@ def top():
 def user_list():
     all_users = user_manager.get_users()
     user_shifts = {}
-    user_tokens = {}
-
     for username in all_users:
         user_shifts[username] = shift_manager.get_weekly_shift_time_map(username)
-        user_tokens[username] = game_manager.get_user_token_from_db(username) # ゲームDBからトークン取得
-
-    return render_template(
-        "user_list.html",
-        users=all_users,
-        user_tokens=user_tokens,
-        user_shifts=user_shifts
-    )
+    return render_template("user_list.html",
+                            users=all_users,
+                            user_tokens=user_manager.user_tokens,
+                            user_shifts=user_shifts
+                            )
 
 @app.route("/wage_register", methods=["GET", "POST"])
 def wage_register():

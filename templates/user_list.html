@@ -1,69 +1,48 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>ユーザーリスト</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='user_style.css') }}">
 </head>
 <body>
-
-<div class="dashboard-container">
-    <!-- 左メニュー -->
-    <div class="left-panel">
-        <h1 class="title">コレワーク</h1>
-        <div class="menu">
-            <ul>
-                <li><a href="{{ url_for('top') }}" class="menu-btn">ホーム</a></li>
-                <li><a href="{{ url_for('shift_register') }}" class="menu-btn">シフト登録</a></li>
-                <li><a href="{{ url_for('wage_register') }}" class="menu-btn">時給設定</a></li>
-                <li><a href="{{ url_for('game') }}" class="menu-btn">ゲーム</a></li>
-                <li><a href="{{ url_for('user_list') }}" class="menu-btn">ユーザーリスト</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- メインパネル -->
-    <div class="main-panel">
-        <h2>ユーザーリスト</h2>
-
-        <table class="user-table">
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>ユーザー名</th>
-                    <th>総トークン</th>
-                    <th>来週のシフト</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for username in users %}
-                <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ username }}</td>
-                    <td>{{ user_tokens[username] }}</td>
-                    <td>
-                        <table class="shift-table">
-                            <tr>
-                                <th>月</th><th>火</th><th>水</th>
-                                <th>木</th><th>金</th><th>土</th><th>日</th>
-                            </tr>
-                            <tr>
-                                <td>{{ user_shifts[username]["mon"] }}</td>
-                                <td>{{ user_shifts[username]["tue"] }}</td>
-                                <td>{{ user_shifts[username]["wed"] }}</td>
-                                <td>{{ user_shifts[username]["thu"] }}</td>
-                                <td>{{ user_shifts[username]["fri"] }}</td>
-                                <td>{{ user_shifts[username]["sat"] }}</td>
-                                <td>{{ user_shifts[username]["sun"] }}</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-
+    <h2>ユーザーリスト</h2>
+    <table class="user-table">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>ユーザー名</th>
+                <th>総トークン</th>
+                <th>来週のシフト</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for username in users %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ username }}</td>
+                <td>{{ user_tokens[username] }}</td>
+                <td>
+                    <table class="shift-table">
+                        <tr>
+                            <th>月</th><th>火</th><th>水</th>
+                            <th>木</th><th>金</th><th>土</th><th>日</th>
+                        </tr>
+                        <tr>
+                            <td>{{ user_shifts[username]["mon"] }}</td>
+                            <td>{{ user_shifts[username]["tue"] }}</td>
+                            <td>{{ user_shifts[username]["wed"] }}</td>
+                            <td>{{ user_shifts[username]["thu"] }}</td>
+                            <td>{{ user_shifts[username]["fri"] }}</td>
+                            <td>{{ user_shifts[username]["sat"] }}</td>
+                            <td>{{ user_shifts[username]["sun"] }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <a href="{{ url_for('top') }}">トップに戻る</a>
 </body>
 </html>
