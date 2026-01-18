@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>時給登録</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='login_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='wage_style.css') }}">
     <style>
         .container {
+            font-weight: bold;
             width: 80%;
             margin: 0 auto;
-            text-align: center;
             padding-top: 50px;
         }
         .form-box {
@@ -31,36 +31,59 @@
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <h2>時給設定</h2>
-        <p>あなたの現在の時給を入力してください。</p>
-        
-        <div class="form-box">
-            <form method="post">
-                <label>
-                    時給：
-                    <input
-                        type="number"
-                        name="salary_per_hour"
-                        value="{{ salary }}"
-                        min="1"
-                        placeholder="例: 1000"
-                        required
-                    > 円
-                </label>
-                <br>
-                <button type="submit">設定を保存する</button>
-            </form>
-            
-            {% if error %}
-                <p style="color:red;">{{ error }}</p>
-            {% endif %}
+    <div class="dashboard-container">
+        <!-- 左メニュー -->
+        <div class="left-panel">
+            <h1 class="title">コレワーク</h1>
+            <div class="menu">
+                    <ul>
+                        <li>
+                            <a href="{{ url_for('top') }}" class="menu-btn {% if request.endpoint == 'top' %}active{% endif %}">ホーム</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('shift_register') }}" class="menu-btn {% if request.endpoint == 'shift_register' %}active{% endif %}">シフト登録</a></li>
+                        <li>
+                            <a href="{{ url_for('wage_register') }}" class="menu-btn {% if request.endpoint == 'wage_register' %}active{% endif %}">時給設定</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('game') }}" class="menu-btn {% if request.endpoint == 'game' %}active{% endif %}">ゲーム</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('user_list') }}" class="menu-btn {% if request.endpoint == 'user_list' %}active{% endif %}">ユーザーリスト</a>
+                        </li>
+                    </ul>
+            </div>
         </div>
+        <!-- メインパネル -->
+        <div class="main-panel">
+            <h2>時給設定</h2>
+            <div class="container">
+                <p>{{ session['username'] }}さんの現在の時給を入力してください。</p>
+                <div class="form-box">
+                    <form method="post">
+                        <label>
+                            時給：
+                            <input
+                                type="number"
+                                name="salary_per_hour"
+                                value="{{ salary }}"
+                                min="1"
+                                placeholder="例: 1000"
+                                required
+                            > 円
+                        </label>
+                        <br>
+                        <button type="submit">設定を保存</button>
+                    </form>
+                    
+                    {% if error %}
+                        <p style="color:red;">{{ error }}</p>
+                    {% endif %}
+                </div>
 
-        <br><br>
-        <a href="{{ url_for('top') }}">トップページに戻る</a>
+                <br><br>
+            </div>
+        </div>
     </div>
-
 </body>
 </html>

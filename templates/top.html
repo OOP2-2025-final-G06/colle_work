@@ -11,10 +11,6 @@
             gap: 20px;
             padding: 20px;
         }
-        .left-panel {
-            width: 200px;
-            flex-shrink: 0;
-        }
         .main-panel {
             flex-grow: 1;
         }
@@ -53,7 +49,7 @@
             padding: 8px;
             text-align: center;
         }
-        .calendar-table th { background: #f0f0f0; }
+        .calendar-table th { background-color: #4c66af; }
         .today-row { background-color: #e3f2fd; } /* 今日の行に色を付ける */
         
         .section-title {
@@ -70,12 +66,21 @@
             <h1 class="title">コレワーク</h1>
             <div class="menu">
                 <ul>
-                    <li><a href="{{ url_for('top') }}">ホーム</a></li>
-                    <li><a href="{{ url_for('shift_register') }}">シフト登録</a></li>
-                    <li><a href="{{ url_for('wage_register') }}">時給設定</a></li>
-                    <li><a href="{{ url_for('game') }}">ゲーム</a></li>
-                    <li><a href="{{ url_for('user_list') }}">ユーザーリスト（みんなのシフト）</a></li>
-                    <li style="margin-top:20px;"><a href="{{ url_for('login') }}">ログアウト</a></li>
+                    <li>
+                        <a href="{{ url_for('top') }}" class="menu-btn {% if request.endpoint == 'top' %}active{% endif %}">ホーム</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('shift_register') }}" class="menu-btn {% if request.endpoint == 'shift_register' %}active{% endif %}">シフト登録</a></li>
+                    <li>
+                        <a href="{{ url_for('wage_register') }}" class="menu-btn {% if request.endpoint == 'wage_register' %}active{% endif %}">時給設定</a>
+                    </li>
+                    <li>                            
+                        <a href="{{ url_for('game') }}" class="menu-btn {% if request.endpoint == 'game' %}active{% endif %}">ゲーム</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('user_list') }}" class="menu-btn {% if request.endpoint == 'user_list' %}active{% endif %}">ユーザーリスト</a>
+                    </li>
+                    <li style="margin-top:20px;"><a href="{{ url_for('login') }}" class="menu-btn">ログアウト</a></li>
                 </ul>
             </div>
         </div>
