@@ -109,9 +109,15 @@ json
 
 本システムでは、用途に合わせて2つのSQLiteデータベースファイルを使用します。
 
-### ① `database.db` (勤怠・給与用)
+### ① `database.db` (システム・勤怠・給与用)
 
-**1. shifts テーブル** (シフト情報)
+**1. users テーブル** (ユーザー認証)
+| カラム名 | 型 | 説明 |
+| :--- | :--- | :--- |
+| `username` | TEXT | ユーザーID (プライマリキー) |
+| `password` | TEXT | パスワード (ハッシュ化推奨) |
+
+**2. shifts テーブル** (シフト情報)
 | カラム名 | 型 | 説明 |
 | :--- | :--- | :--- |
 | `id` | INTEGER | プライマリキー (AUTOINCREMENT) |
@@ -124,11 +130,13 @@ json
 | `shift_hour` | REAL | 計算用勤務時間 (小数) |
 | **制約** | UNIQUE | (username, date) の組み合わせは一意 |
 
-**2. user_wages テーブル** (時給設定)
+**3. user_wages テーブル** (時給設定)
 | カラム名 | 型 | 説明 |
 | :--- | :--- | :--- |
 | `username` | TEXT | ユーザー名 (プライマリキー) |
 | `salary` | INTEGER | 設定時給額 |
+
+---
 
 ### ② `game.db` (ゲームデータ用)
 
@@ -137,9 +145,9 @@ json
 | :--- | :--- | :--- |
 | `id` | INTEGER | プライマリキー (AUTOINCREMENT) |
 | `username` | TEXT | ユーザー名 (UNIQUE) |
-| `user_token` | INTEGER | 所持トークン数 |
-| `stage` | INTEGER | 現在の到達ステージ |
-| `stats_json` | TEXT | ステータス情報のJSON文字列 |
+| `user_token` | INTEGER | 所持トークン数 (DEFAULT 0) |
+| `stage` | INTEGER | 現在の到達ステージ (DEFAULT 1) |
+| `stats_json` | TEXT | ステータス情報のJSON文字列 (`{"atk":3...}`等) |
 
 **stats_json の構造例:**
 ```json
