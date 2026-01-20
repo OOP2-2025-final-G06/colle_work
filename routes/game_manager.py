@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify, session
 
 game_bp = Blueprint('game_api', __name__)
 
-DB_PATH = "user_data.db"
+DB_PATH = "game.db"
 
 def init_db():
     """ゲーム用データベースとテーブルの初期化"""

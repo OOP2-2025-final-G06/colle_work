@@ -2,7 +2,7 @@
 import sqlite3
 from routes import game_manager  # ゲームDBからトークンを取得
 
-DB_PATH = "user_data.db"
+DB_PATH = "database.db"
 
 def init_db():
     """ユーザー管理用テーブルを作成（パスワードのみ）"""
